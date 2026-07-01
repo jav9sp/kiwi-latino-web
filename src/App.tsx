@@ -11,6 +11,7 @@ import TripsPage from './pages/TripsPage';
 import TripDetailPage from './pages/TripDetailPage';
 import CreateTripPage from './pages/CreateTripPage';
 import CommunityPage from './pages/CommunityPage';
+import HousingPage from './pages/HousingPage';
 import MessagesPage from './pages/MessagesPage';
 import ChatPage from './pages/ChatPage';
 import ProfilePage from './pages/ProfilePage';
@@ -45,6 +46,7 @@ export default function App() {
           <Route path="trips" element={<TripsPage />} />
           <Route path="trips/:id" element={<TripDetailPage />} />
           <Route path="trips/new" element={<CreateTripPage />} />
+          <Route path="housing" element={<HousingPage />} />
           <Route path="community" element={<CommunityPage />} />
           <Route path="messages" element={<MessagesPage />} />
           <Route path="chat/:userId" element={<ChatPage />} />

@@ -8,24 +8,33 @@ export default function CreateTripPage() {
   const navigate = useNavigate();
   const createTrip = useCreateTrip();
   const [form, setForm] = useState({
-    origin: '', destination: '', departureAt: '', seatsTotal: '3', price: '', notes: '',
+    origin: '', destination: '', departureDate: '', seatsTotal: '3', costPerPerson: '', notes: '',
   });
+  const [error, setError] = useState('');
 
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    const raw = form.departureDate.length === 16 ? form.departureDate + ':00' : form.departureDate;
+    const departureDate = new Date(raw).toISOString();
     const payload: Record<string, unknown> = {
       origin: form.origin,
       destination: form.destination,
-      departureAt: form.departureAt,
+      departureDate,
       seatsTotal: Number(form.seatsTotal),
     };
-    if (form.price) payload.price = Number(form.price);
+    if (form.costPerPerson) payload.costPerPerson = Number(form.costPerPerson);
     if (form.notes) payload.notes = form.notes;
-    const trip = await createTrip.mutateAsync(payload);
-    navigate(`/trips/${trip.id}`);
+    try {
+      const trip = await createTrip.mutateAsync(payload);
+      navigate(`/trips/${trip.id}`);
+    } catch (err: unknown) {
+      const data = (err as { response?: { data?: { error?: string; message?: string } } })?.response?.data;
+      setError(data?.error ?? data?.message ?? 'Error al crear el viaje. Intenta de nuevo.');
+    }
   };
 
   return (
@@ -36,6 +45,7 @@ export default function CreateTripPage() {
       <h1 className="text-xl font-bold mb-5">Ofrecer viaje</h1>
 
       <form onSubmit={handleSubmit} className="card p-5 space-y-4">
+        {error && <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">{error}</p>}
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-sm font-medium mb-1">Origen</label>
@@ -54,7 +64,7 @@ export default function CreateTripPage() {
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Fecha y hora de salida</label>
-          <input type="datetime-local" className="input" value={form.departureAt} onChange={set('departureAt')} required />
+          <input type="datetime-local" className="input" value={form.departureDate} onChange={set('departureDate')} required />
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -63,7 +73,7 @@ export default function CreateTripPage() {
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Precio por asiento (NZD)</label>
-            <input type="number" min="0" className="input" value={form.price} onChange={set('price')} placeholder="Opcional" />
+            <input type="number" min="0" className="input" value={form.costPerPerson} onChange={set('costPerPerson')} placeholder="Opcional" />
           </div>
         </div>
         <div>

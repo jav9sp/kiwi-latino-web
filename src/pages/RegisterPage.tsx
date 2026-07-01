@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Leaf } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
-import { NZ_CITIES } from '../constants';
+import { NZ_CITIES, LATAM_COUNTRIES, getFlagEmoji } from '../constants';
 
 export default function RegisterPage() {
-  const [form, setForm] = useState({ name: '', email: '', password: '', city: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', city: '', country: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { register } = useAuthStore();
@@ -19,15 +19,23 @@ export default function RegisterPage() {
     setError('');
     setLoading(true);
     try {
-      await register(form);
+      await register({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        cityNz: form.city || undefined,
+        countryOrigin: form.country || undefined,
+      });
       navigate('/feed');
     } catch (err: unknown) {
-      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
-      setError(msg ?? 'Error al registrarse.');
+      const data = (err as { response?: { data?: { error?: string; message?: string } } })?.response?.data;
+      setError(data?.error ?? data?.message ?? 'Error al registrarse. Intenta de nuevo.');
     } finally {
       setLoading(false);
     }
   };
+
+  const selectedCountry = LATAM_COUNTRIES.find((c) => c.code === form.country);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8">
@@ -55,8 +63,30 @@ export default function RegisterPage() {
             <input type="password" className="input" value={form.password} onChange={set('password')} required minLength={6} />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Ciudad</label>
-            <select className="input" value={form.city} onChange={set('city')} required>
+            <label className="block text-sm font-medium mb-1">País de origen</label>
+            <div className="relative">
+              {selectedCountry && (
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-lg pointer-events-none">
+                  {getFlagEmoji(selectedCountry.code)}
+                </span>
+              )}
+              <select
+                className={`input ${selectedCountry ? 'pl-10' : ''}`}
+                value={form.country}
+                onChange={set('country')}
+              >
+                <option value="">Selecciona tu país</option>
+                {LATAM_COUNTRIES.map((c) => (
+                  <option key={c.code} value={c.code}>
+                    {getFlagEmoji(c.code)} {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Ciudad en NZ <span className="text-gray-400 font-normal">(opcional)</span></label>
+            <select className="input" value={form.city} onChange={set('city')}>
               <option value="">Selecciona una ciudad</option>
               {NZ_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>

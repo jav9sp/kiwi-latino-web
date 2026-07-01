@@ -1,15 +1,15 @@
 import { useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Users } from 'lucide-react';
+import { Building2, Plus } from 'lucide-react';
 import { usePosts } from '../hooks/usePosts';
 import PostCard from '../components/PostCard';
 import EmptyState from '../components/EmptyState';
 import ErrorState from '../components/ErrorState';
 import { PostModuleKey } from '../constants';
 
-export default function CommunityPage() {
+export default function HousingPage() {
   const navigate = useNavigate();
-  const filters = { module: 'COMMUNITY' as PostModuleKey };
+  const filters = { module: 'HOUSING' as PostModuleKey };
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isError, refetch } = usePosts(filters);
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -30,16 +30,23 @@ export default function CommunityPage() {
   if (isError) return <div className="p-6"><ErrorState onRetry={refetch} /></div>;
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 pb-20 md:pb-6">
+    <div className="max-w-2xl mx-auto px-4 py-6 pb-24 md:pb-6">
       <div className="flex items-center justify-between mb-5">
-        <h1 className="text-xl font-bold">Comunidad</h1>
+        <div>
+          <h1 className="text-xl font-bold">Alojamiento</h1>
+          <p className="text-sm text-gray-500">Piezas, casas, carpas y más</p>
+        </div>
         <button onClick={() => navigate('/posts/new')} className="btn-primary">
           <Plus size={16} /> Publicar
         </button>
       </div>
 
       {posts.length === 0 && !isFetchingNextPage ? (
-        <EmptyState icon={Users} title="Sin publicaciones" subtitle="Sé el primero en publicar en tu comunidad." actionLabel="Crear publicación" onAction={() => navigate('/posts/new')} />
+        <EmptyState
+          icon={Building2}
+          title="Sin publicaciones"
+          subtitle="Aún no hay publicaciones de alojamiento."
+        />
       ) : (
         <div className="space-y-4">
           {posts.map((p, i) => {

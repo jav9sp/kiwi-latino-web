@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Send } from 'lucide-react';
+import UserLink from '../components/UserLink';
 import { useChat, useSendMessage } from '../hooks/useMessages';
 import { useAuthStore } from '../stores/authStore';
 import ErrorState from '../components/ErrorState';
@@ -39,12 +40,7 @@ export default function ChatPage() {
         <button onClick={() => navigate(-1)} className="btn-ghost p-2 -ml-2">
           <ArrowLeft size={18} />
         </button>
-        <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
-          {partner?.name?.[0]?.toUpperCase() ?? '?'}
-        </div>
-        <div>
-          <p className="font-semibold text-sm">{partner?.name ?? '...'}</p>
-        </div>
+        <UserLink user={partner} size={36} className="text-sm font-semibold" />
       </div>
 
       {/* Messages */}

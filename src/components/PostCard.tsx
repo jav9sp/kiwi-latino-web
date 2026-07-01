@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Post } from '../types';
 import { POST_MODULES } from '../constants';
 import { formatDistanceToNow } from '../utils/date';
+import UserLink from './UserLink';
 
 interface Props {
   post: Post;
@@ -46,18 +47,10 @@ export default function PostCard({ post }: Props) {
           <span className="flex items-center gap-1"><Heart size={13} /> {post.likeCount ?? 0}</span>
           <span className="flex items-center gap-1"><MessageCircle size={13} /> {post.commentCount ?? 0}</span>
         </div>
-        <div className="flex items-center gap-2">
-          {post.user?.avatarUrl ? (
-            <img src={post.user.avatarUrl} alt="" className="w-5 h-5 rounded-full object-cover" />
-          ) : (
-            <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-bold">
-              {post.user?.name?.[0]?.toUpperCase()}
-            </div>
-          )}
-          <span>{post.user?.name}</span>
+        <UserLink user={post.user} size={20} stopPropagation className="text-gray-400 hover:text-gray-700">
           <span>·</span>
           <span>{formatDistanceToNow(post.createdAt)}</span>
-        </div>
+        </UserLink>
       </div>
     </article>
   );

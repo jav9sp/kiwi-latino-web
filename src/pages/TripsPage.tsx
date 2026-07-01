@@ -51,10 +51,11 @@ export default function TripsPage() {
             {NZ_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
           <input type="date" className="input text-sm py-1.5" value={filters.date ?? ''} onChange={(e) => setFilters((f) => ({ ...f, date: e.target.value || undefined }))} />
-          <select className="input text-sm py-1.5" value={filters.status ?? ''} onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value as 'OPEN' | 'FULL' | undefined || undefined }))}>
-            <option value="">Estado</option>
+          <select className="input text-sm py-1.5" value={filters.status ?? ''} onChange={(e) => setFilters((f) => ({ ...f, status: (e.target.value as TripFilters['status']) || undefined }))}>
+            <option value="">Todos</option>
             <option value="OPEN">Disponibles</option>
             <option value="FULL">Completos</option>
+            <option value="COMPLETED">Finalizados</option>
           </select>
         </div>
       </div>

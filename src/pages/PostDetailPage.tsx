@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, MessageCircle, MapPin, Trash2, Send } from 'lucide-react';
-import { usePost } from '../hooks/usePosts';
+import UserLink from '../components/UserLink';
+import ConfirmModal from '../components/ConfirmModal';
+import { usePost, useDeletePost } from '../hooks/usePosts';
 import { useComments, useCreateComment, useDeleteComment, useLikePost } from '../hooks/useComments';
 import { useAuthStore } from '../stores/authStore';
 import ErrorState from '../components/ErrorState';
@@ -17,8 +19,16 @@ export default function PostDetailPage() {
   const { data: comments = [] } = useComments(id!);
   const createComment = useCreateComment(id!);
   const deleteComment = useDeleteComment(id!);
+  const deletePost = useDeletePost();
   const likePost = useLikePost(id!);
   const [content, setContent] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleDeletePost = async () => {
+    await deletePost.mutateAsync(id!);
+    setShowDeleteModal(false);
+    navigate(-1);
+  };
 
   if (isError) return <div className="p-6"><ErrorState onRetry={refetch} /></div>;
   if (!post) return <div className="h-full flex items-center justify-center"><div className="animate-spin w-8 h-8 rounded-full border-4 border-primary border-t-transparent" /></div>;
@@ -53,25 +63,35 @@ export default function PostDetailPage() {
           <p className="text-gray-600 mb-4 whitespace-pre-line">{post.description}</p>
 
           <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              {post.user?.avatarUrl ? (
-                <img src={post.user.avatarUrl} alt="" className="w-7 h-7 rounded-full object-cover" />
-              ) : (
-                <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-bold">
-                  {post.user?.name?.[0]?.toUpperCase()}
-                </div>
-              )}
-              <span>{post.user?.name}</span>
+            <UserLink user={post.user} size={28} className="text-sm text-gray-500">
               <span>·</span>
               <span>{formatDistanceToNow(post.createdAt)}</span>
+            </UserLink>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => likePost.mutate(liked)}
+                className={`flex items-center gap-1.5 text-sm transition-colors ${liked ? 'text-red-500' : 'text-gray-400 hover:text-red-400'}`}
+              >
+                <Heart size={16} fill={liked ? 'currentColor' : 'none'} />
+                {post.likeCount ?? 0}
+              </button>
+              {!isOwner && post.user?.id && (
+                <button
+                  onClick={() => navigate(`/chat/${post.user!.id}`)}
+                  className="btn-outline text-xs py-1 px-2"
+                >
+                  <MessageCircle size={14} /> Contactar
+                </button>
+              )}
+              {isOwner && (
+                <button
+                  onClick={() => setShowDeleteModal(true)}
+                  className="btn-ghost p-1.5 text-gray-400 hover:text-red-500"
+                >
+                  <Trash2 size={16} />
+                </button>
+              )}
             </div>
-            <button
-              onClick={() => likePost.mutate(liked)}
-              className={`flex items-center gap-1.5 text-sm transition-colors ${liked ? 'text-red-500' : 'text-gray-400 hover:text-red-400'}`}
-            >
-              <Heart size={16} fill={liked ? 'currentColor' : 'none'} />
-              {post.likeCount ?? 0}
-            </button>
           </div>
         </div>
       </div>
@@ -119,6 +139,18 @@ export default function PostDetailPage() {
           </button>
         </form>
       </div>
+
+      {showDeleteModal && (
+        <ConfirmModal
+          title="Eliminar publicación"
+          message="¿Estás seguro? Esta acción no se puede deshacer."
+          confirmLabel="Eliminar"
+          danger
+          loading={deletePost.isPending}
+          onConfirm={handleDeletePost}
+          onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
     </div>
   );
 }

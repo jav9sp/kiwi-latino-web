@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, User } from 'lucide-react';
 import { useConversations } from '../hooks/useMessages';
 import ErrorState from '../components/ErrorState';
 import EmptyState from '../components/EmptyState';
@@ -22,35 +22,43 @@ export default function MessagesPage() {
           {conversations.map((conv, i) => {
             const partner = conv.user;
             return (
-              <button
-                key={partner.id ?? i}
-                onClick={() => navigate(`/chat/${partner.id}`)}
-                className="flex items-center gap-3 p-4 w-full hover:bg-gray-50 transition-colors text-left"
-              >
-                {partner.avatarUrl ? (
-                  <img src={partner.avatarUrl} alt="" className="w-11 h-11 rounded-full object-cover shrink-0" />
-                ) : (
-                  <div className="w-11 h-11 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold shrink-0">
-                    {partner.name?.[0]?.toUpperCase()}
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <span className="font-medium text-sm truncate">{partner.name}</span>
+              <div key={partner.id ?? i} className="flex items-center hover:bg-gray-50 transition-colors">
+                <button
+                  onClick={() => navigate(`/chat/${partner.id}`)}
+                  className="flex items-center gap-3 p-4 flex-1 min-w-0 text-left"
+                >
+                  {partner.avatarUrl ? (
+                    <img src={partner.avatarUrl} alt="" className="w-11 h-11 rounded-full object-cover shrink-0" />
+                  ) : (
+                    <div className="w-11 h-11 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold shrink-0">
+                      {partner.name?.[0]?.toUpperCase()}
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="font-medium text-sm truncate">{partner.name}</span>
+                      {conv.lastMessage && (
+                        <span className="text-xs text-gray-400 shrink-0">{formatDistanceToNow(conv.lastMessage.createdAt)}</span>
+                      )}
+                    </div>
                     {conv.lastMessage && (
-                      <span className="text-xs text-gray-400 shrink-0">{formatDistanceToNow(conv.lastMessage.createdAt)}</span>
+                      <p className="text-sm text-gray-500 truncate mt-0.5">{conv.lastMessage.content}</p>
                     )}
                   </div>
-                  {conv.lastMessage && (
-                    <p className="text-sm text-gray-500 truncate mt-0.5">{conv.lastMessage.content}</p>
+                  {conv.unreadCount > 0 && (
+                    <span className="w-5 h-5 rounded-full bg-primary text-white text-xs flex items-center justify-center shrink-0">
+                      {conv.unreadCount}
+                    </span>
                   )}
-                </div>
-                {conv.unreadCount > 0 && (
-                  <span className="w-5 h-5 rounded-full bg-primary text-white text-xs flex items-center justify-center shrink-0">
-                    {conv.unreadCount}
-                  </span>
-                )}
-              </button>
+                </button>
+                <button
+                  onClick={() => navigate(`/profile/${partner.id}`)}
+                  className="btn-ghost p-3 mr-2 text-gray-400 hover:text-primary shrink-0"
+                  title="Ver perfil"
+                >
+                  <User size={16} />
+                </button>
+              </div>
             );
           })}
         </div>

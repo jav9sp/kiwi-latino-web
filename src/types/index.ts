@@ -1,18 +1,19 @@
 import { NZCity, PostModuleKey } from '../constants';
 
 export interface User {
-  id: string; 
-  email: string; 
+  id: string;
+  email: string;
   name: string;
-  cityNz?: string; 
-  avatarUrl?: string; 
-  bio?: string; 
+  cityNz?: string;
+  countryOrigin?: string;
+  avatarUrl?: string;
+  bio?: string;
   createdAt: string;
 }
 
 export interface AuthTokens { accessToken: string; refreshToken: string; }
 export interface LoginPayload { email: string; password: string; }
-export interface RegisterPayload { email: string; password: string; name: string; city?: string; }
+export interface RegisterPayload { email: string; password: string; name: string; cityNz?: string; countryOrigin?: string; }
 
 export interface Post {
   id: string;
@@ -48,11 +49,11 @@ export type TripStatus = 'OPEN' | 'FULL' | 'COMPLETED' | 'CANCELLED';
 
 export interface Trip {
   id: string;
-  driver?: Pick<User, 'id' | 'name' | 'avatarUrl'>;
+  user?: Pick<User, 'id' | 'name' | 'avatarUrl'>;
   origin: string; destination: string;
-  departureAt: string;
+  departureDate: string;
   seatsTotal: number; seatsAvailable: number;
-  price?: number; notes?: string;
+  costPerPerson?: number; notes?: string;
   status: TripStatus; createdAt: string;
 }
 

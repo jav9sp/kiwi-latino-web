@@ -2,6 +2,7 @@ import { MapPin, Calendar, Users, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Trip } from '../types';
 import { formatDate } from '../utils/date';
+import UserLink from './UserLink';
 
 interface Props {
   trip: Trip;
@@ -30,23 +31,14 @@ export default function TripCard({ trip }: Props) {
       </div>
 
       <div className="flex flex-wrap gap-3 text-sm text-gray-500 mb-3">
-        <span className="flex items-center gap-1.5"><Calendar size={14} /> {formatDate(trip.departureAt)}</span>
+        <span className="flex items-center gap-1.5"><Calendar size={14} /> {formatDate(trip.departureDate)}</span>
         <span className="flex items-center gap-1.5"><Users size={14} /> {trip.seatsAvailable}/{trip.seatsTotal} asientos</span>
-        {trip.price != null && (
-          <span className="flex items-center gap-1.5"><MapPin size={14} /> ${trip.price} NZD</span>
+        {trip.costPerPerson != null && (
+          <span className="flex items-center gap-1.5"><MapPin size={14} /> ${trip.costPerPerson} NZD</span>
         )}
       </div>
 
-      <div className="flex items-center gap-2 text-xs text-gray-400">
-        {trip.driver?.avatarUrl ? (
-          <img src={trip.driver.avatarUrl} alt="" className="w-5 h-5 rounded-full object-cover" />
-        ) : (
-          <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-bold">
-            {trip.driver?.name?.[0]?.toUpperCase()}
-          </div>
-        )}
-        <span>{trip.driver?.name}</span>
-      </div>
+      <UserLink user={trip.user} size={20} stopPropagation className="text-xs text-gray-400" />
     </article>
   );
 }
