@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, MessageCircle, MapPin, Trash2, Send } from 'lucide-react';
+import { ArrowLeft, Heart, MessageCircle, MapPin, Trash2, Send, Pencil } from 'lucide-react';
+import ImageSlider from '../components/ImageSlider';
 import UserLink from '../components/UserLink';
 import ConfirmModal from '../components/ConfirmModal';
 import { usePost, useDeletePost } from '../hooks/usePosts';
@@ -51,7 +52,7 @@ export default function PostDetailPage() {
       </button>
 
       <div className="card overflow-hidden mb-4">
-        {post.images?.[0] && <img src={post.images[0]} alt="" className="w-full h-56 object-cover" />}
+        {post.images && post.images.length > 0 && <ImageSlider images={post.images} />}
         <div className="p-5">
           <div className="flex items-center gap-2 mb-3 flex-wrap">
             {mod && <span className="badge text-white text-xs" style={{ backgroundColor: mod.color }}>{mod.label}</span>}
@@ -84,12 +85,20 @@ export default function PostDetailPage() {
                 </button>
               )}
               {isOwner && (
-                <button
-                  onClick={() => setShowDeleteModal(true)}
-                  className="btn-ghost p-1.5 text-gray-400 hover:text-red-500"
-                >
-                  <Trash2 size={16} />
-                </button>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => navigate(`/posts/${post.id}/edit`)}
+                    className="btn-ghost p-1.5 text-gray-400 hover:text-primary"
+                  >
+                    <Pencil size={16} />
+                  </button>
+                  <button
+                    onClick={() => setShowDeleteModal(true)}
+                    className="btn-ghost p-1.5 text-gray-400 hover:text-red-500"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
               )}
             </div>
           </div>

@@ -58,8 +58,10 @@ export interface Trip {
 }
 
 export interface TripBooking {
-  id: string; passengerId: string; status: 'CONFIRMED' | 'CANCELLED';
-  passenger?: Pick<User, 'id' | 'name' | 'avatarUrl'>;
+  id: string;
+  seats: number;
+  createdAt: string;
+  user?: Pick<User, 'id' | 'name' | 'avatarUrl'>;
 }
 
 export interface TripWithBookings extends Trip { bookings?: TripBooking[]; }

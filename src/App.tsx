@@ -17,6 +17,7 @@ import MessagesPage from './pages/MessagesPage';
 import ChatPage from './pages/ChatPage';
 import ProfilePage from './pages/ProfilePage';
 import AdminPage from './pages/AdminPage';
+import EditPostPage from './pages/EditPostPage';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuthStore();
@@ -44,6 +45,7 @@ export default function App() {
           <Route index element={<Navigate to="/feed" replace />} />
           <Route path="feed" element={<FeedPage />} />
           <Route path="posts/:id" element={<PostDetailPage />} />
+          <Route path="posts/:id/edit" element={<EditPostPage />} />
           <Route path="posts/new" element={<CreatePostPage />} />
           <Route path="trips" element={<TripsPage />} />
           <Route path="trips/:id" element={<TripDetailPage />} />
