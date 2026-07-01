@@ -12,9 +12,11 @@ import TripDetailPage from './pages/TripDetailPage';
 import CreateTripPage from './pages/CreateTripPage';
 import CommunityPage from './pages/CommunityPage';
 import HousingPage from './pages/HousingPage';
+import JobsPage from './pages/JobsPage';
 import MessagesPage from './pages/MessagesPage';
 import ChatPage from './pages/ChatPage';
 import ProfilePage from './pages/ProfilePage';
+import AdminPage from './pages/AdminPage';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuthStore();
@@ -47,11 +49,13 @@ export default function App() {
           <Route path="trips/:id" element={<TripDetailPage />} />
           <Route path="trips/new" element={<CreateTripPage />} />
           <Route path="housing" element={<HousingPage />} />
+          <Route path="jobs" element={<JobsPage />} />
           <Route path="community" element={<CommunityPage />} />
           <Route path="messages" element={<MessagesPage />} />
           <Route path="chat/:userId" element={<ChatPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="profile/:userId" element={<ProfilePage />} />
+          <Route path="admin" element={<AdminPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

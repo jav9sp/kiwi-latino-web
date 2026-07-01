@@ -12,6 +12,10 @@ const api: AxiosInstance = axios.create({
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = tokenStorage.get('accessToken');
   if (token) config.headers.Authorization = `Bearer ${token}`;
+  // FormData: dejar que el browser asigne Content-Type con el boundary correcto
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type'];
+  }
   return config;
 });
 

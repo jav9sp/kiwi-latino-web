@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, User, LogOut, Edit2, Check, X, MapPin, MessageCircle } from 'lucide-react';
+import { ArrowLeft, User, LogOut, Edit2, Check, X, MapPin, MessageCircle, Camera } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '../stores/authStore';
 import { NZ_CITIES, POST_MODULES, LATAM_COUNTRIES, getFlagEmoji } from '../constants';
 import api from '../lib/api';
+import { compressImage } from '../lib/imageUtils';
 import { ApiResponse, Post } from '../types';
 
 interface PublicProfile {
@@ -42,6 +43,24 @@ export default function ProfilePage() {
   const [country, setCountry] = useState(user?.countryOrigin ?? '');
   const [bio, setBio] = useState(user?.bio ?? '');
   const [saving, setSaving] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingAvatar(true);
+    try {
+      const blob = await compressImage(file, 800, 0.85);
+      const formData = new FormData();
+      formData.append('image', blob, 'avatar.jpg');
+      const { data } = await api.post<{ data: { url: string } }>('/upload/image', formData, { timeout: 60_000 });
+      await updateProfile({ avatarUrl: data.data.url });
+    } finally {
+      setUploadingAvatar(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -87,15 +106,37 @@ export default function ProfilePage() {
         <div className="space-y-4 md:flex md:items-start md:justify-between mb-5">
           <div className="flex items-center gap-4">
             <div className="relative">
-              {profile?.avatarUrl ? (
-                <img src={profile.avatarUrl} alt="" className="w-16 h-16 rounded-full object-cover" />
-              ) : (
-                <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary text-2xl font-bold">
-                  {profile?.name?.[0]?.toUpperCase()}
-                </div>
+              {isOwn && (
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={handleAvatarChange}
+                />
               )}
+              <div
+                className={`relative w-16 h-16 rounded-full overflow-hidden ${isOwn ? 'cursor-pointer group' : ''}`}
+                onClick={() => isOwn && !uploadingAvatar && fileInputRef.current?.click()}
+              >
+                {profile?.avatarUrl ? (
+                  <img src={profile.avatarUrl} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-primary/20 flex items-center justify-center text-primary text-2xl font-bold">
+                    {profile?.name?.[0]?.toUpperCase()}
+                  </div>
+                )}
+                {isOwn && (
+                  <div className={`absolute inset-0 bg-black/45 flex items-center justify-center transition-opacity ${uploadingAvatar ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                    {uploadingAvatar
+                      ? <div className="w-5 h-5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                      : <Camera size={18} className="text-white" />
+                    }
+                  </div>
+                )}
+              </div>
               {profile?.countryOrigin && (
-                <span className="absolute -bottom-1 -right-1 text-xl leading-none">
+                <span className="absolute -bottom-1 -right-1 text-xl leading-none pointer-events-none">
                   {getFlagEmoji(profile.countryOrigin)}
                 </span>
               )}

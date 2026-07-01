@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom';
-import { Home, Car, Users, MessageCircle, User, LogOut, Leaf, Building2, Menu, X } from 'lucide-react';
+import { Home, Car, Users, MessageCircle, User, LogOut, Leaf, Building2, Briefcase, Menu, X, LayoutDashboard } from 'lucide-react';
 import { getFlagEmoji } from '../constants';
 import { useAuthStore } from '../stores/authStore';
 
 const nav = [
   { to: '/feed',      icon: Home,          label: 'Inicio' },
   { to: '/housing',   icon: Building2,     label: 'Alojamiento' },
+  { to: '/jobs',      icon: Briefcase,     label: 'Empleos' },
   { to: '/trips',     icon: Car,           label: 'Viajes' },
   { to: '/community', icon: Users,         label: 'Comunidad' },
   { to: '/messages',  icon: MessageCircle, label: 'Mensajes' },
@@ -18,10 +19,13 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? 'bg-primary/10 text-primary' : 'text-gray-600 hover:bg-gray-100'
   }`;
 
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL as string | undefined;
+
 export default function Layout() {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const isAdmin = !!ADMIN_EMAIL && user?.email === ADMIN_EMAIL;
 
   const handleLogout = () => { logout(); navigate('/login'); };
   const closeDrawer = () => setDrawerOpen(false);
@@ -49,6 +53,11 @@ export default function Layout() {
               <Icon size={18} /> {label}
             </NavLink>
           ))}
+          {isAdmin && (
+            <NavLink to="/admin" className={navLinkClass}>
+              <LayoutDashboard size={18} /> Admin
+            </NavLink>
+          )}
         </nav>
 
         <div className="px-3 py-4 border-t border-gray-100">
@@ -89,6 +98,11 @@ export default function Layout() {
               <Icon size={18} /> {label}
             </NavLink>
           ))}
+          {isAdmin && (
+            <NavLink to="/admin" onClick={closeDrawer} className={navLinkClass}>
+              <LayoutDashboard size={18} /> Admin
+            </NavLink>
+          )}
         </nav>
 
         <div className="px-3 py-4 border-t border-gray-100">
