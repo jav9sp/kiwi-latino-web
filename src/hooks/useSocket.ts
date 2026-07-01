@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../stores/authStore';
-import { connectSocket, disconnectSocket, getSocket } from '../lib/socket';
+import { connectSocket, disconnectSocket } from '../lib/socket';
 import tokenStorage from '../lib/tokenStorage';
 import type { Message } from '../types';
 
