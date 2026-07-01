@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom';
 import { Home, Car, Users, MessageCircle, User, LogOut, Leaf, Building2, Briefcase, Menu, X, LayoutDashboard } from 'lucide-react';
-import { getFlagEmoji } from '../constants';
+import Flag from './Flag';
 import { useAuthStore } from '../stores/authStore';
 
 const nav = [
@@ -66,7 +66,7 @@ export default function Layout() {
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">
                 {user?.name}
-                {user?.countryOrigin && <span className="ml-1">{getFlagEmoji(user.countryOrigin)}</span>}
+                {user?.countryOrigin && <Flag code={user.countryOrigin} size={14} className="ml-1" />}
               </p>
               <p className="text-xs text-gray-500 truncate">{user?.cityNz ?? 'NZ'}</p>
             </div>
@@ -111,7 +111,7 @@ export default function Layout() {
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">
                 {user?.name}
-                {user?.countryOrigin && <span className="ml-1">{getFlagEmoji(user.countryOrigin)}</span>}
+                {user?.countryOrigin && <Flag code={user.countryOrigin} size={14} className="ml-1" />}
               </p>
               <p className="text-xs text-gray-500 truncate">{user?.cityNz ?? 'NZ'}</p>
             </div>

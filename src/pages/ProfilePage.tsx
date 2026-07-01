@@ -4,6 +4,7 @@ import { ArrowLeft, User, LogOut, Edit2, Check, X, MapPin, MessageCircle, Camera
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '../stores/authStore';
 import { NZ_CITIES, POST_MODULES, LATAM_COUNTRIES, getFlagEmoji } from '../constants';
+import Flag from '../components/Flag';
 import api from '../lib/api';
 import { compressImage } from '../lib/imageUtils';
 import { ApiResponse, Post } from '../types';
@@ -136,8 +137,8 @@ export default function ProfilePage() {
                 )}
               </div>
               {profile?.countryOrigin && (
-                <span className="absolute -bottom-1 -right-1 text-xl leading-none pointer-events-none">
-                  {getFlagEmoji(profile.countryOrigin)}
+                <span className="absolute -bottom-1 -right-1 pointer-events-none">
+                  <Flag code={profile.countryOrigin} size={20} />
                 </span>
               )}
             </div>
@@ -183,11 +184,14 @@ export default function ProfilePage() {
                 ))}
               </select>
             ) : (
-              <p className="text-sm">
-                {profile?.countryOrigin
-                  ? `${getFlagEmoji(profile.countryOrigin)} ${LATAM_COUNTRIES.find((c) => c.code === profile.countryOrigin)?.name ?? profile.countryOrigin}`
-                  : 'No especificado'}
-              </p>
+              profile?.countryOrigin ? (
+                <p className="text-sm flex items-center gap-1.5">
+                  <Flag code={profile.countryOrigin} size={16} />
+                  {LATAM_COUNTRIES.find((c) => c.code === profile.countryOrigin)?.name ?? profile.countryOrigin}
+                </p>
+              ) : (
+                <p className="text-sm">No especificado</p>
+              )
             )}
           </div>
           <div>

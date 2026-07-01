@@ -2,7 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Users, FileText, Car, MessageCircle, Heart, TrendingUp, MapPin, Globe } from 'lucide-react';
 import api from '../lib/api';
 import { ApiResponse } from '../types';
-import { POST_MODULES, LATAM_COUNTRIES, getFlagEmoji } from '../constants';
+import { POST_MODULES, LATAM_COUNTRIES } from '../constants';
+import Flag from '../components/Flag';
 
 interface AdminStats {
   users: {
@@ -53,7 +54,7 @@ function StatCard({
   );
 }
 
-function BarRow({ label, count, max, color }: { label: string; count: number; max: number; color: string }) {
+function BarRow({ label, count, max, color }: { label: React.ReactNode; count: number; max: number; color: string }) {
   const pct = max > 0 ? Math.round((count / max) * 100) : 0;
   return (
     <div className="flex items-center gap-3">
@@ -209,7 +210,7 @@ export default function AdminPage() {
                 return (
                   <BarRow
                     key={country}
-                    label={`${getFlagEmoji(country)} ${found?.name ?? country}`}
+                    label={<span className="flex items-center gap-1.5"><Flag code={country} size={14} />{found?.name ?? country}</span>}
                     count={count}
                     max={maxCountryCount}
                     color="#3b82f6"
@@ -261,7 +262,7 @@ export default function AdminPage() {
                     </p>
                   )}
                   {u.countryOrigin && (
-                    <p className="text-xs text-gray-400">{getFlagEmoji(u.countryOrigin)}</p>
+                    <Flag code={u.countryOrigin} size={14} />
                   )}
                 </div>
               </div>

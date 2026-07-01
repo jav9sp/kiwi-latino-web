@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Leaf } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { NZ_CITIES, LATAM_COUNTRIES, getFlagEmoji } from '../constants';
+import Flag from '../components/Flag';
 
 export default function RegisterPage() {
   const [form, setForm] = useState({ name: '', email: '', password: '', city: '', country: '' });
@@ -66,8 +67,8 @@ export default function RegisterPage() {
             <label className="block text-sm font-medium mb-1">País de origen</label>
             <div className="relative">
               {selectedCountry && (
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-lg pointer-events-none">
-                  {getFlagEmoji(selectedCountry.code)}
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <Flag code={selectedCountry.code} size={18} />
                 </span>
               )}
               <select
