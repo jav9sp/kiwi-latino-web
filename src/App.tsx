@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './stores/authStore';
+import { useSocketConnection } from './hooks/useSocket';
 import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -28,6 +29,7 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const { loadUser, logout } = useAuthStore();
+  useSocketConnection();
 
   useEffect(() => {
     loadUser();

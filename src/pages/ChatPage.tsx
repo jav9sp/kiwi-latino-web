@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Send } from 'lucide-react';
+import { ArrowLeft, Send, Wifi, WifiOff } from 'lucide-react';
 import UserLink from '../components/UserLink';
 import { useChat, useSendMessage } from '../hooks/useMessages';
 import { useAuthStore } from '../stores/authStore';
+import { getSocket } from '../lib/socket';
 import ErrorState from '../components/ErrorState';
 import { formatTime } from '../utils/date';
 
@@ -14,7 +15,38 @@ export default function ChatPage() {
   const { data, isError, refetch } = useChat(userId!);
   const send = useSendMessage();
   const [content, setContent] = useState('');
+  const [connected, setConnected] = useState(false);
+  const [partnerTyping, setPartnerTyping] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const stopTypingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isTyping = useRef(false);
+
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket) return;
+    const onConnect    = () => setConnected(true);
+    const onDisconnect = () => setConnected(false);
+    setConnected(socket.connected);
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+    };
+  }, []);
+
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket || !userId) return;
+    const onTyping    = ({ senderId }: { senderId: string }) => { if (senderId === userId) setPartnerTyping(true); };
+    const onStopTyping = ({ senderId }: { senderId: string }) => { if (senderId === userId) setPartnerTyping(false); };
+    socket.on('typing', onTyping);
+    socket.on('stop_typing', onStopTyping);
+    return () => {
+      socket.off('typing', onTyping);
+      socket.off('stop_typing', onStopTyping);
+    };
+  }, [userId]);
 
   const pages = data?.pages ?? [];
   const messages = pages.flatMap((p) => p.items).reverse();
@@ -24,9 +56,30 @@ export default function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages.length]);
 
+  const handleTyping = (value: string) => {
+    setContent(value);
+    const socket = getSocket();
+    if (!socket || !userId) return;
+    if (!isTyping.current) {
+      isTyping.current = true;
+      socket.emit('typing', { receiverId: userId });
+    }
+    if (stopTypingTimer.current) clearTimeout(stopTypingTimer.current);
+    stopTypingTimer.current = setTimeout(() => {
+      isTyping.current = false;
+      socket.emit('stop_typing', { receiverId: userId });
+    }, 2000);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim()) return;
+    const socket = getSocket();
+    if (socket && userId && isTyping.current) {
+      isTyping.current = false;
+      if (stopTypingTimer.current) clearTimeout(stopTypingTimer.current);
+      socket.emit('stop_typing', { receiverId: userId });
+    }
     await send.mutateAsync({ receiverId: userId!, content: content.trim() });
     setContent('');
   };
@@ -41,6 +94,11 @@ export default function ChatPage() {
           <ArrowLeft size={18} />
         </button>
         <UserLink user={partner} size={36} className="text-sm font-semibold" />
+        <span className="ml-auto" title={connected ? 'En línea' : 'Sin conexión'}>
+          {connected
+            ? <Wifi size={16} className="text-green-500" />
+            : <WifiOff size={16} className="text-gray-400" />}
+        </span>
       </div>
 
       {/* Messages */}
@@ -56,6 +114,15 @@ export default function ChatPage() {
             </div>
           );
         })}
+        {partnerTyping && (
+          <div className="flex justify-start">
+            <div className="bg-white border border-gray-200 rounded-2xl rounded-bl-sm px-3 py-2 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:0ms]" />
+              <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:150ms]" />
+              <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:300ms]" />
+            </div>
+          </div>
+        )}
         <div ref={bottomRef} />
       </div>
 
@@ -66,7 +133,7 @@ export default function ChatPage() {
           className="input flex-1"
           placeholder="Escribe un mensaje..."
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={(e) => handleTyping(e.target.value)}
           autoFocus
         />
         <button type="submit" disabled={send.isPending || !content.trim()} className="btn-primary shrink-0 p-2.5">

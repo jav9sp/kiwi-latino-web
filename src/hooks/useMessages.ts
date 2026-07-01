@@ -9,7 +9,6 @@ export function useConversations() {
       const { data } = await api.get<ApiResponse<Conversation[]>>('/messages/conversations');
       return data.data ?? [];
     },
-    refetchInterval: 10_000,
   });
 }
 
@@ -26,7 +25,6 @@ export function useChat(userId: string) {
     },
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (last) => last.nextCursor,
-    refetchInterval: 5_000,
     enabled: !!userId,
   });
 }
