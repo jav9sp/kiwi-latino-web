@@ -3,6 +3,7 @@ import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom';
 import { Home, Car, Users, MessageCircle, User, LogOut, Leaf, Building2, Briefcase, Menu, X, LayoutDashboard } from 'lucide-react';
 import Flag from './Flag';
 import { useAuthStore } from '../stores/authStore';
+import { useUnreadCount } from '../hooks/useMessages';
 
 const nav = [
   { to: '/feed',      icon: Home,          label: 'Inicio' },
@@ -27,8 +28,16 @@ export default function Layout() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isAdmin = !!ADMIN_EMAIL && user?.email === ADMIN_EMAIL;
 
+  const unreadCount = useUnreadCount();
   const handleLogout = () => { logout(); navigate('/login'); };
   const closeDrawer = () => setDrawerOpen(false);
+
+  const UnreadBadge = () =>
+    unreadCount > 0 ? (
+      <span className="ml-auto min-w-[18px] h-[18px] px-1 bg-red-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center">
+        {unreadCount > 99 ? '99+' : unreadCount}
+      </span>
+    ) : null;
 
   const UserAvatar = ({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) => {
     const dim = size === 'sm' ? 'w-8 h-8 text-sm' : size === 'lg' ? 'w-9 h-9 text-base' : 'w-8 h-8 text-sm';
@@ -51,6 +60,7 @@ export default function Layout() {
           {nav.map(({ to, icon: Icon, label }) => (
             <NavLink key={to} to={to} className={navLinkClass}>
               <Icon size={18} /> {label}
+              {to === '/messages' && <UnreadBadge />}
             </NavLink>
           ))}
           {isAdmin && (
@@ -124,16 +134,29 @@ export default function Layout() {
 
       {/* ── Mobile: top header ── */}
       <header className="md:hidden fixed top-0 inset-x-0 h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4 z-30">
-        <button onClick={() => setDrawerOpen(true)} className="btn-ghost p-2 -ml-2">
+        <button onClick={() => setDrawerOpen(true)} className="btn-ghost p-2 -ml-2 relative">
           <Menu size={22} />
+          {unreadCount > 0 && (
+            <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
+          )}
         </button>
         <Link to="/feed" className="flex items-center gap-1.5 absolute left-1/2 -translate-x-1/2">
           <Leaf className="text-primary" size={20} />
           <span className="font-bold text-primary">Kiwi Latino</span>
         </Link>
-        <Link to="/profile" className="shrink-0">
-          <UserAvatar />
-        </Link>
+        <div className="flex items-center gap-1">
+          <Link to="/messages" className="btn-ghost p-2 relative">
+            <MessageCircle size={20} className="text-gray-600" />
+            {unreadCount > 0 && (
+              <span className="absolute top-1 right-1 min-w-[16px] h-4 px-0.5 bg-red-500 rounded-full text-[9px] font-bold text-white flex items-center justify-center border-2 border-white">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
+          </Link>
+          <Link to="/profile" className="shrink-0">
+            <UserAvatar />
+          </Link>
+        </div>
       </header>
 
       {/* ── Main content ── */}

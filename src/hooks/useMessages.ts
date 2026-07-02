@@ -12,6 +12,11 @@ export function useConversations() {
   });
 }
 
+export function useUnreadCount() {
+  const { data } = useConversations();
+  return data?.reduce((sum, c) => sum + c.unreadCount, 0) ?? 0;
+}
+
 interface ChatPage { items: Message[]; hasMore: boolean; nextCursor?: string; user: { id: string; name: string; avatarUrl?: string }; }
 
 export function useChat(userId: string) {
