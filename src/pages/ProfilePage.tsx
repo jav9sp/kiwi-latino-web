@@ -1,18 +1,35 @@
 import { useState, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, User, LogOut, Edit2, Check, X, MapPin, MessageCircle, Camera } from 'lucide-react';
+import { ArrowLeft, User, LogOut, Edit2, Check, X, MapPin, MessageCircle, Camera, ChevronRight, Calendar, Users, DollarSign } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '../stores/authStore';
 import { NZ_CITIES, POST_MODULES, LATAM_COUNTRIES, getFlagEmoji } from '../constants';
 import Flag from '../components/Flag';
 import api from '../lib/api';
 import { compressImage } from '../lib/imageUtils';
-import { ApiResponse, Post } from '../types';
+import { ApiResponse, Post, TripStatus } from '../types';
+import { formatDate, timeAgo } from '../utils/date';
+
+interface TripSummary {
+  id: string; origin: string; destination: string;
+  departureDate: string; seatsTotal: number; seatsAvailable: number;
+  costPerPerson?: number; currency: string; status: TripStatus;
+}
 
 interface PublicProfile {
   id: string; name: string; cityNz?: string; countryOrigin?: string; avatarUrl?: string; bio?: string;
+  lastSeenAt?: string;
   posts?: Pick<Post, 'id' | 'module' | 'title' | 'city' | 'images'>[];
+  tripsCreated?: TripSummary[];
 }
+
+const TRIP_STATUS_LABEL: Record<string, string> = {
+  OPEN: 'Disponible', FULL: 'Completo', COMPLETED: 'Finalizado', CANCELLED: 'Cancelado',
+};
+const TRIP_STATUS_CLASS: Record<string, string> = {
+  OPEN: 'bg-green-100 text-green-700', FULL: 'bg-yellow-100 text-yellow-700',
+  COMPLETED: 'bg-blue-100 text-blue-700', CANCELLED: 'bg-red-100 text-red-700',
+};
 
 export default function ProfilePage() {
   const { userId } = useParams<{ userId?: string }>();
@@ -29,11 +46,11 @@ export default function ProfilePage() {
     enabled: !isOwn && !!userId,
   });
 
-  const { data: myPosts } = useQuery({
-    queryKey: ['user', user?.id, 'posts'],
+  const { data: myData } = useQuery({
+    queryKey: ['user', user?.id],
     queryFn: async () => {
       const { data } = await api.get<ApiResponse<PublicProfile>>(`/users/${user!.id}`);
-      return data.data?.posts ?? [];
+      return data.data!;
     },
     enabled: isOwn && !!user?.id,
   });
@@ -95,7 +112,8 @@ export default function ProfilePage() {
   }
 
   const profile = isOwn ? user : otherProfile;
-  const posts = isOwn ? (myPosts ?? []) : (otherProfile?.posts ?? []);
+  const posts = isOwn ? (myData?.posts ?? []) : (otherProfile?.posts ?? []);
+  const trips = isOwn ? (myData?.tripsCreated ?? []) : (otherProfile?.tripsCreated ?? []);
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 pb-20 md:pb-6">
@@ -149,6 +167,11 @@ export default function ProfilePage() {
                 <h1 className="text-xl font-bold">{profile?.name}</h1>
               )}
               {isOwn && <p className="text-sm text-gray-500">{user?.email}</p>}
+              {!isOwn && otherProfile?.lastSeenAt && (
+                <p className="text-xs text-gray-400 mt-0.5">
+                  Última conexión: {timeAgo(otherProfile.lastSeenAt)}
+                </p>
+              )}
             </div>
           </div>
           {isOwn && !editing && (
@@ -228,7 +251,7 @@ export default function ProfilePage() {
             </div>
           ) : (
             <div className="space-y-2">
-              {posts.map((p) => {
+              {posts.map((p: NonNullable<PublicProfile['posts']>[number]) => {
                 const mod = POST_MODULES.find((m) => m.key === p.module);
                 return (
                   <Link key={p.id} to={`/posts/${p.id}`} className="card p-3 flex items-center gap-3 hover:shadow-md transition-shadow">
@@ -249,6 +272,50 @@ export default function ProfilePage() {
                   </Link>
                 );
               })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {(trips.length > 0 || isOwn) && (
+        <div className="mb-4">
+          <h2 className="font-semibold text-sm text-gray-700 mb-2 px-1">Viajes publicados</h2>
+          {trips.length === 0 ? (
+            <div className="card p-6 flex flex-col items-center gap-2 text-center">
+              <p className="text-sm text-gray-400">Aún no has publicado viajes</p>
+              <Link to="/trips/new" className="btn-primary text-xs py-1.5 px-3 mt-1">
+                Publicar viaje
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {trips.map((t: TripSummary) => (
+                <Link key={t.id} to={`/trips/${t.id}`} className="card p-4 flex items-center gap-3 hover:shadow-md transition-shadow">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1 font-semibold text-sm mb-1.5">
+                      <span className="truncate">{t.origin}</span>
+                      <ChevronRight size={13} className="text-gray-400 shrink-0" />
+                      <span className="truncate">{t.destination}</span>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className="text-xs text-gray-400 flex items-center gap-1">
+                        <Calendar size={11} />{formatDate(t.departureDate)}
+                      </span>
+                      <span className="text-xs text-gray-400 flex items-center gap-1">
+                        <Users size={11} />{t.seatsAvailable}/{t.seatsTotal} asientos
+                      </span>
+                      {t.costPerPerson != null && (
+                        <span className="text-xs text-gray-400 flex items-center gap-1">
+                          <DollarSign size={11} />{t.costPerPerson} {t.currency}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <span className={`badge text-xs shrink-0 ${TRIP_STATUS_CLASS[t.status] ?? 'bg-gray-100 text-gray-600'}`}>
+                    {TRIP_STATUS_LABEL[t.status] ?? t.status}
+                  </span>
+                </Link>
+              ))}
             </div>
           )}
         </div>

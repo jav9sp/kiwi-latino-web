@@ -128,7 +128,10 @@ export default function TripDetailPage() {
           <div className="divide-y divide-gray-100">
             {trip.bookings.map((b) => (
               <div key={b.id} className="flex items-center justify-between py-2.5 first:pt-0 last:pb-0">
-                <div className="flex items-center gap-2.5">
+                <button
+                  onClick={() => b.user?.id && navigate(`/profile/${b.user.id}`)}
+                  className="flex items-center gap-2.5 hover:opacity-75 transition-opacity text-left"
+                >
                   {b.user?.avatarUrl ? (
                     <img src={b.user.avatarUrl} alt="" className="w-8 h-8 rounded-full object-cover" />
                   ) : (
@@ -142,7 +145,7 @@ export default function TripDetailPage() {
                       <p className="text-xs text-gray-400">{b.seats} asientos</p>
                     )}
                   </div>
-                </div>
+                </button>
                 {isDriver && b.user?.id && (
                   <button
                     onClick={() => navigate(`/chat/${b.user!.id}`)}
