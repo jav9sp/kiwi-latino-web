@@ -57,9 +57,12 @@ export interface Trip {
   status: TripStatus; createdAt: string;
 }
 
+export type BookingStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED';
+
 export interface TripBooking {
   id: string;
   seats: number;
+  status: BookingStatus;
   createdAt: string;
   user?: Pick<User, 'id' | 'name' | 'avatarUrl'>;
 }

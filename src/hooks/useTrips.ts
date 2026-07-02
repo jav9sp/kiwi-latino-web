@@ -64,3 +64,19 @@ export function useCancelBooking(tripId: string) {
     },
   });
 }
+
+export function useAcceptBooking(tripId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (bookingId: string) => api.post(`/trips/${tripId}/bookings/${bookingId}/accept`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['trip', tripId] }),
+  });
+}
+
+export function useRejectBooking(tripId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (bookingId: string) => api.post(`/trips/${tripId}/bookings/${bookingId}/reject`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['trip', tripId] }),
+  });
+}
