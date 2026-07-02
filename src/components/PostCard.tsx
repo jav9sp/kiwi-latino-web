@@ -1,9 +1,10 @@
-import { Heart, MessageCircle, MapPin } from 'lucide-react';
+import { Heart, MessageCircle, MapPin, Bookmark } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Post } from '../types';
 import { POST_MODULES } from '../constants';
 import { formatDistanceToNow } from '../utils/date';
 import UserLink from './UserLink';
+import { useSavePost } from '../hooks/usePosts';
 
 interface Props {
   post: Post;
@@ -12,6 +13,8 @@ interface Props {
 export default function PostCard({ post }: Props) {
   const navigate = useNavigate();
   const mod = POST_MODULES.find((m) => m.key === post.module);
+  const savePost = useSavePost(post.id);
+  const saved = post.savedByMe ?? false;
 
   return (
     <article
@@ -47,10 +50,20 @@ export default function PostCard({ post }: Props) {
           <span className="flex items-center gap-1"><Heart size={13} /> {post.likeCount ?? 0}</span>
           <span className="flex items-center gap-1"><MessageCircle size={13} /> {post.commentCount ?? 0}</span>
         </div>
-        <UserLink user={post.user} size={20} stopPropagation className="text-gray-400 hover:text-gray-700">
-          <span>·</span>
-          <span>{formatDistanceToNow(post.createdAt)}</span>
-        </UserLink>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={(e) => { e.stopPropagation(); savePost.mutate(saved); }}
+            disabled={savePost.isPending}
+            className={`transition-colors ${saved ? 'text-primary' : 'text-gray-400 hover:text-primary'}`}
+            title={saved ? 'Quitar de guardados' : 'Guardar publicación'}
+          >
+            <Bookmark size={14} fill={saved ? 'currentColor' : 'none'} />
+          </button>
+          <UserLink user={post.user} size={20} stopPropagation className="text-gray-400 hover:text-gray-700">
+            <span>·</span>
+            <span>{formatDistanceToNow(post.createdAt)}</span>
+          </UserLink>
+        </div>
       </div>
     </article>
   );

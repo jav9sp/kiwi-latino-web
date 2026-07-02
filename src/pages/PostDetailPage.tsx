@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, MessageCircle, MapPin, Trash2, Send, Pencil } from 'lucide-react';
+import { ArrowLeft, Heart, MessageCircle, MapPin, Trash2, Send, Pencil, Bookmark } from 'lucide-react';
 import ImageSlider from '../components/ImageSlider';
 import UserLink from '../components/UserLink';
 import ConfirmModal from '../components/ConfirmModal';
-import { usePost, useDeletePost } from '../hooks/usePosts';
+import { usePost, useDeletePost, useSavePost } from '../hooks/usePosts';
 import { useComments, useCreateComment, useDeleteComment, useLikePost } from '../hooks/useComments';
 import { useAuthStore } from '../stores/authStore';
 import ErrorState from '../components/ErrorState';
@@ -22,6 +22,7 @@ export default function PostDetailPage() {
   const deleteComment = useDeleteComment(id!);
   const deletePost = useDeletePost();
   const likePost = useLikePost(id!);
+  const savePost = useSavePost(id!);
   const [content, setContent] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -37,6 +38,7 @@ export default function PostDetailPage() {
   const mod = POST_MODULES.find((m) => m.key === post.module);
   const isOwner = post.user?.id === user?.id;
   const liked = post.likedByMe ?? false;
+  const saved = post.savedByMe ?? false;
 
   const submitComment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,6 +71,14 @@ export default function PostDetailPage() {
               <span>{formatDistanceToNow(post.createdAt)}</span>
             </UserLink>
             <div className="flex items-center gap-2">
+              <button
+                onClick={() => savePost.mutate(saved)}
+                disabled={savePost.isPending}
+                className={`transition-colors ${saved ? 'text-primary' : 'text-gray-400 hover:text-primary'}`}
+                title={saved ? 'Quitar de guardados' : 'Guardar publicación'}
+              >
+                <Bookmark size={18} fill={saved ? 'currentColor' : 'none'} />
+              </button>
               <button
                 onClick={() => likePost.mutate(liked)}
                 className={`flex items-center gap-1.5 text-sm transition-colors ${liked ? 'text-red-500' : 'text-gray-400 hover:text-red-400'}`}

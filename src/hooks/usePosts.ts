@@ -69,3 +69,26 @@ export function useDeletePost() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['posts'] }),
   });
 }
+
+export function useSavePost(id: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (saved: boolean) =>
+      saved ? api.delete(`/posts/${id}/save`) : api.post(`/posts/${id}/save`),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['post', id] });
+      qc.invalidateQueries({ queryKey: ['posts'] });
+      qc.invalidateQueries({ queryKey: ['saved-posts'] });
+    },
+  });
+}
+
+export function useSavedPosts(page = 1) {
+  return useQuery({
+    queryKey: ['saved-posts', page],
+    queryFn: async () => {
+      const { data } = await api.get<ApiResponse<PaginatedResponse<Post>>>('/users/me/saved-posts', { params: { page, limit: 12 } });
+      return data.data!;
+    },
+  });
+}

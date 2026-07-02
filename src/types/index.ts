@@ -28,6 +28,7 @@ export interface Post {
   createdAt: string;
   updatedAt: string;
   likedByMe?: boolean;
+  savedByMe?: boolean;
   likeCount?: number;
   commentCount?: number;
   metadata?: Record<string, unknown>;

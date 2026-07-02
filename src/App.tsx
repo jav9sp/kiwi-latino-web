@@ -22,6 +22,7 @@ import EditPostPage from './pages/EditPostPage';
 import LandingPage from './pages/LandingPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import SavedPostsPage from './pages/SavedPostsPage';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuthStore();
@@ -61,6 +62,7 @@ export default function App() {
           <Route path="housing" element={<HousingPage />} />
           <Route path="jobs" element={<JobsPage />} />
           <Route path="community" element={<CommunityPage />} />
+          <Route path="saved" element={<SavedPostsPage />} />
           <Route path="messages" element={<MessagesPage />} />
           <Route path="chat/:userId" element={<ChatPage />} />
           <Route path="profile" element={<ProfilePage />} />
