@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, User, LogOut, Edit2, Check, X, MapPin, MessageCircle, Camera, ChevronRight, Calendar, Users, DollarSign } from 'lucide-react';
+import { ArrowLeft, User, LogOut, Edit2, Check, X, MapPin, MessageCircle, Camera, ChevronRight, Calendar, Users, DollarSign, Lock, Eye, EyeOff, KeyRound } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '../stores/authStore';
 import { NZ_CITIES, POST_MODULES, LATAM_COUNTRIES, getFlagEmoji } from '../constants';
@@ -64,6 +64,15 @@ export default function ProfilePage() {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [changingPw, setChangingPw] = useState(false);
+  const [currentPw, setCurrentPw] = useState('');
+  const [newPw, setNewPw] = useState('');
+  const [confirmPw, setConfirmPw] = useState('');
+  const [showPw, setShowPw] = useState(false);
+  const [pwError, setPwError] = useState('');
+  const [pwSuccess, setPwSuccess] = useState('');
+  const [savingPw, setSavingPw] = useState(false);
+
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -93,6 +102,26 @@ export default function ProfilePage() {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPwError('');
+    setPwSuccess('');
+    if (newPw !== confirmPw) { setPwError('Las contraseñas nuevas no coinciden'); return; }
+    if (newPw.length < 6) { setPwError('La nueva contraseña debe tener al menos 6 caracteres'); return; }
+    setSavingPw(true);
+    try {
+      await api.patch('/users/me/password', { currentPassword: currentPw, newPassword: newPw });
+      setPwSuccess('Contraseña actualizada correctamente');
+      setCurrentPw(''); setNewPw(''); setConfirmPw('');
+      setChangingPw(false);
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error;
+      setPwError(msg ?? 'Error al actualizar la contraseña');
+    } finally {
+      setSavingPw(false);
+    }
   };
 
   if (!isOwn && isLoading) {
@@ -316,6 +345,79 @@ export default function ProfilePage() {
                   </span>
                 </Link>
               ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {isOwn && (
+        <div className="mb-4">
+          {!changingPw ? (
+            <button
+              onClick={() => { setChangingPw(true); setPwError(''); setPwSuccess(''); }}
+              className="btn-outline w-full text-sm"
+            >
+              <KeyRound size={15} /> Cambiar contraseña
+            </button>
+          ) : (
+            <div className="card p-5">
+              <h3 className="font-semibold text-sm mb-4 flex items-center gap-2">
+                <KeyRound size={15} className="text-primary" /> Cambiar contraseña
+              </h3>
+              <form onSubmit={handleChangePassword} className="space-y-4">
+                {pwError && (
+                  <div className="flex items-start gap-2 bg-red-50 border border-red-100 text-red-600 text-xs px-3 py-2.5 rounded-lg">
+                    <span className="shrink-0 mt-0.5">⚠</span>{pwError}
+                  </div>
+                )}
+                {pwSuccess && (
+                  <div className="flex items-start gap-2 bg-green-50 border border-green-100 text-green-700 text-xs px-3 py-2.5 rounded-lg">
+                    <Check size={13} className="shrink-0 mt-0.5" />{pwSuccess}
+                  </div>
+                )}
+
+                {[
+                  { label: 'Contraseña actual', value: currentPw, onChange: setCurrentPw },
+                  { label: 'Nueva contraseña', value: newPw, onChange: setNewPw },
+                  { label: 'Confirmar nueva contraseña', value: confirmPw, onChange: setConfirmPw },
+                ].map(({ label, value, onChange }) => (
+                  <div key={label}>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">{label}</label>
+                    <div className="relative">
+                      <Lock size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                      <input
+                        type={showPw ? 'text' : 'password'}
+                        className="input pl-8 pr-10 py-2.5 text-sm"
+                        placeholder="••••••••"
+                        value={value}
+                        onChange={(e) => onChange(e.target.value)}
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPw(!showPw)}
+                        tabIndex={-1}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                      >
+                        {showPw ? <EyeOff size={13} /> : <Eye size={13} />}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+
+                <div className="flex gap-2 pt-1">
+                  <button type="submit" disabled={savingPw} className="btn-primary text-sm flex-1">
+                    <Check size={14} /> {savingPw ? 'Guardando...' : 'Guardar'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setChangingPw(false); setPwError(''); setCurrentPw(''); setNewPw(''); setConfirmPw(''); }}
+                    className="btn-outline text-sm"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              </form>
             </div>
           )}
         </div>
