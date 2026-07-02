@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Fragment } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Send, Wifi, WifiOff } from 'lucide-react';
 import UserLink from '../components/UserLink';
@@ -6,7 +6,7 @@ import { useChat, useSendMessage } from '../hooks/useMessages';
 import { useAuthStore } from '../stores/authStore';
 import { getSocket } from '../lib/socket';
 import ErrorState from '../components/ErrorState';
-import { formatTime } from '../utils/date';
+import { formatTime, formatDayLabel } from '../utils/date';
 
 export default function ChatPage() {
   const { userId } = useParams<{ userId: string }>();
@@ -103,15 +103,27 @@ export default function ChatPage() {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
-        {messages.map((msg) => {
+        {messages.map((msg, i) => {
           const isMine = msg.senderId === user?.id;
+          const msgDay  = new Date(msg.createdAt).toDateString();
+          const prevDay = i > 0 ? new Date(messages[i - 1].createdAt).toDateString() : null;
+          const showSeparator = msgDay !== prevDay;
           return (
-            <div key={msg.id} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[72%] px-3 py-2 rounded-2xl text-sm ${isMine ? 'bg-primary text-white rounded-br-sm' : 'bg-white border border-gray-200 rounded-bl-sm'}`}>
-                <p>{msg.content}</p>
-                <p className={`text-xs mt-1 ${isMine ? 'text-white/70' : 'text-gray-400'}`}>{formatTime(msg.createdAt)}</p>
+            <Fragment key={msg.id}>
+              {showSeparator && (
+                <div className="flex items-center justify-center my-3">
+                  <span className="text-xs text-gray-400 bg-gray-100 rounded-full px-3 py-1 capitalize">
+                    {formatDayLabel(msg.createdAt)}
+                  </span>
+                </div>
+              )}
+              <div className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[72%] px-3 py-2 rounded-2xl text-sm ${isMine ? 'bg-primary text-white rounded-br-sm' : 'bg-white border border-gray-200 rounded-bl-sm'}`}>
+                  <p>{msg.content}</p>
+                  <p className={`text-xs mt-1 ${isMine ? 'text-white/70' : 'text-gray-400'}`}>{formatTime(msg.createdAt)}</p>
+                </div>
               </div>
-            </div>
+            </Fragment>
           );
         })}
         {partnerTyping && (

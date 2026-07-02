@@ -26,6 +26,28 @@ export function formatDistanceToNow(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('es-NZ', { day: 'numeric', month: 'short' });
 }
 
+export function formatDayLabel(dateStr: string): string {
+  const date = new Date(dateStr);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const sameDay = (a: Date, b: Date) =>
+    a.getDate() === b.getDate() &&
+    a.getMonth() === b.getMonth() &&
+    a.getFullYear() === b.getFullYear();
+
+  if (sameDay(date, today)) return 'Hoy';
+  if (sameDay(date, yesterday)) return 'Ayer';
+
+  const diffDays = Math.floor((today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+  if (diffDays < 7) {
+    return date.toLocaleDateString('es-NZ', { weekday: 'long', day: 'numeric', month: 'long' });
+  }
+
+  return date.toLocaleDateString('es-NZ', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
 export function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('es-NZ', { day: 'numeric', month: 'long', year: 'numeric' });
 }
