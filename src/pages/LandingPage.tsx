@@ -350,7 +350,7 @@ export default function LandingPage() {
             {/* Connector line (desktop) */}
             <div className="hidden md:block absolute top-10 left-[calc(16.67%+2rem)] right-[calc(16.67%+2rem)] h-px bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 z-0" />
 
-            {STEPS.map(({ n, title, desc, icon: Icon }) => (
+            {STEPS.map(({ n, title, desc }) => (
               <div key={n} className="relative text-center">
                 <div className="relative z-10 w-20 h-20 rounded-2xl bg-primary-light border-4 border-white shadow-md mx-auto mb-6 flex items-center justify-center">
                   <span className="text-2xl font-black text-primary">{n}</span>
