@@ -38,8 +38,9 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   loadUser: async () => {
     try {
-      const token = tokenStorage.get('accessToken');
-      if (!token) { set({ isLoading: false }); return; }
+      const accessToken = tokenStorage.get('accessToken');
+      const refreshToken = tokenStorage.get('refreshToken');
+      if (!accessToken && !refreshToken) { set({ isLoading: false }); return; }
       const { data } = await api.get<{ data: User }>('/users/me');
       set({ user: data.data });
     } catch {
