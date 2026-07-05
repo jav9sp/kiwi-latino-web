@@ -6,9 +6,9 @@ import { NZ_CITIES, LATAM_COUNTRIES, getFlagEmoji } from '../constants';
 import Flag from '../components/Flag';
 
 const BENEFITS = [
-  'Publica arriendos, trabajo y más sin comisiones',
-  'Conecta con hispanohablantes en tu país de destino',
-  'Chat en tiempo real, sin aplicaciones externas',
+  'Todo en un solo lugar. Sin saltar entre grupos ni apps.',
+  'Conecta con personas que ya recorrieron el mismo camino.',
+  'Chat directo. Sin intermediarios, sin salir de la plataforma.',
 ];
 
 export default function RegisterPage() {
@@ -83,20 +83,18 @@ export default function RegisterPage() {
         <div className="absolute -bottom-20 right-1/3 w-56 h-56 rounded-full bg-white/[0.05]" />
 
         {/* Logo */}
-        <Link to="/landing" className="relative z-10 flex items-center gap-2.5 w-fit">
-          <span className="text-2xl select-none">✈️</span>
-          <span className="font-black text-white text-xl">Belfera</span>
+        <Link to="/landing" className="relative z-10 w-fit">
+          <img src="/logo.png" alt="Belfera" className="h-8 w-auto brightness-0 invert" />
         </Link>
 
         {/* Headline + benefits */}
         <div className="relative z-10">
           <h2 className="text-4xl font-black text-white leading-tight mb-4">
-            Únete a miles<br />
-            de latinos en<br />
-            <span className="text-green-300">Nueva Zelanda</span>
+            Empieza<br />
+            <span className="text-green-300">acompañado.</span>
           </h2>
           <p className="text-white/65 text-sm leading-relaxed mb-8 max-w-xs">
-            Crea tu cuenta gratis y accede a todo lo que la comunidad tiene para ofrecerte.
+            Hay personas que ya estuvieron donde estás y están listas para ayudarte.
           </p>
           <ul className="space-y-3">
             {BENEFITS.map((b) => (
@@ -110,7 +108,7 @@ export default function RegisterPage() {
 
         {/* Country flags strip */}
         <div className="relative z-10">
-          <p className="text-white/40 text-xs uppercase tracking-widest mb-3">Comunidad de toda Latinoamérica</p>
+          <p className="text-white/40 text-xs uppercase tracking-widest mb-3">Personas de toda Latinoamérica</p>
           <div className="flex flex-wrap gap-2">
             {LATAM_COUNTRIES.slice(0, 8).map((c) => (
               <div
@@ -133,9 +131,8 @@ export default function RegisterPage() {
 
         {/* Header mobile */}
         <div className="lg:hidden flex items-center justify-between mb-8">
-          <Link to="/landing" className="flex items-center gap-2">
-            <span className="text-xl">✈️</span>
-            <span className="font-black text-primary text-lg">Belfera</span>
+          <Link to="/landing">
+            <img src="/logo.png" alt="Belfera" className="h-7 w-auto" />
           </Link>
           <Link to="/landing" className="text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1 transition-colors">
             <ArrowLeft size={14} /> Inicio

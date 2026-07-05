@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom';
-import { Home, Car, Users, MessageCircle, User, LogOut, Plane, Building2, Briefcase, Menu, X, LayoutDashboard, Bookmark } from 'lucide-react';
+import { Home, Car, Users, MessageCircle, User, LogOut, Building2, Briefcase, Menu, X, LayoutDashboard, Bookmark } from 'lucide-react';
 import Flag from './Flag';
 import { useAuthStore } from '../stores/authStore';
 import { useUnreadCount } from '../hooks/useMessages';
@@ -52,9 +52,8 @@ export default function Layout() {
 
       {/* ── Desktop sidebar ── */}
       <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 shrink-0">
-        <Link to="/feed" className="flex items-center gap-2 px-6 py-5 border-b border-gray-100 hover:bg-gray-50 transition-colors">
-          <Plane className="text-primary" size={22} />
-          <span className="font-bold text-lg text-primary">Belfera</span>
+        <Link to="/feed" className="flex items-center px-6 py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors">
+          <img src="/logo.png" alt="Belfera" className="h-8 w-auto" />
         </Link>
 
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
@@ -96,9 +95,8 @@ export default function Layout() {
       {/* ── Mobile: slide-out drawer ── */}
       <div className={`md:hidden fixed inset-y-0 left-0 w-72 bg-white z-50 flex flex-col shadow-2xl transition-transform duration-300 ease-in-out ${drawerOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100">
-          <Link to="/feed" onClick={closeDrawer} className="flex items-center gap-2">
-            <Plane className="text-primary" size={20} />
-            <span className="font-bold text-lg text-primary">Belfera</span>
+          <Link to="/feed" onClick={closeDrawer}>
+            <img src="/logo.png" alt="Belfera" className="h-7 w-auto" />
           </Link>
           <button onClick={closeDrawer} className="btn-ghost p-2 -mr-2"><X size={20} /></button>
         </div>
@@ -141,9 +139,8 @@ export default function Layout() {
             <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
           )}
         </button>
-        <Link to="/feed" className="flex items-center gap-1.5 absolute left-1/2 -translate-x-1/2">
-          <Plane className="text-primary" size={18} />
-          <span className="font-bold text-primary">Belfera</span>
+        <Link to="/feed" className="absolute left-1/2 -translate-x-1/2">
+          <img src="/logo.png" alt="Belfera" className="h-6 w-auto" />
         </Link>
         <div className="flex items-center gap-1">
           <Link to="/messages" className="btn-ghost p-2 relative">

@@ -66,20 +66,19 @@ export default function LoginPage() {
         <div className="absolute -bottom-20 right-1/4 w-56 h-56 rounded-full bg-white/[0.04]" />
 
         {/* Logo */}
-        <Link to="/landing" className="relative z-10 flex items-center gap-2.5 w-fit">
-          <span className="text-2xl select-none">✈️</span>
-          <span className="font-black text-white text-xl">Belfera</span>
+        <Link to="/landing" className="relative z-10 w-fit">
+          <img src="/logo.png" alt="Belfera" className="h-8 w-auto brightness-0 invert" />
         </Link>
 
         {/* Headline + chips */}
         <div className="relative z-10">
           <h2 className="text-4xl font-black text-white leading-tight mb-4">
-            La comunidad<br />
-            latina en<br />
-            <span className="text-green-300">Nueva Zelanda</span>
+            Nunca<br />
+            llegas<br />
+            <span className="text-green-300">solo.</span>
           </h2>
           <p className="text-white/65 text-sm leading-relaxed mb-8 max-w-xs">
-            Alojamiento, trabajo, viajes y comunidad. Todo en un solo lugar, en español, sin costo.
+            Alojamiento, trabajo, viajes y comunidad. Todo en un solo lugar, en español.
           </p>
           <div className="flex flex-wrap gap-2">
             {MODULE_CHIPS.map(({ label, color }) => (
@@ -97,7 +96,7 @@ export default function LoginPage() {
         {/* Testimonial */}
         <div className="relative z-10 bg-white/10 border border-white/20 rounded-2xl p-5">
           <p className="text-white/90 text-sm italic leading-relaxed mb-4">
-            "Encontré trabajo en una semana y después un arriendo cerca de la ciudad. Belfera me cambió la vida acá."
+            "Llegué sin conocer a nadie. En una semana tenía trabajo y en dos semanas tenía donde vivir. Todo lo encontré en Belfera."
           </p>
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-green-400/30 flex items-center justify-center text-white font-bold text-sm shrink-0">
@@ -116,9 +115,8 @@ export default function LoginPage() {
 
         {/* Header mobile */}
         <div className="lg:hidden flex items-center justify-between mb-10">
-          <Link to="/landing" className="flex items-center gap-2">
-            <span className="text-xl">✈️</span>
-            <span className="font-black text-primary text-lg">Belfera</span>
+          <Link to="/landing">
+            <img src="/logo.png" alt="Belfera" className="h-7 w-auto" />
           </Link>
           <Link to="/landing" className="text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1 transition-colors">
             <ArrowLeft size={14} /> Inicio

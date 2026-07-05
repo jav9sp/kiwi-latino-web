@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   Home, Briefcase, ShoppingBag, Car, Users,
   ArrowRight, MapPin, MessageCircle, CheckCircle,
-  Shield, Smartphone, Menu, X, Star,
+  Shield, Smartphone, Menu, X,
 } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 
@@ -12,60 +12,60 @@ const MODULES = [
     icon: Home,
     label: 'Alojamiento',
     color: '#4CAF50',
-    desc: 'Piezas, cuartos y alojamiento temporal. Encuentra dónde quedarte en NZ.',
+    desc: 'Piezas y cuartos compartidos. Encuentra dónde quedarte sin depender de grupos de Facebook.',
   },
   {
     icon: Briefcase,
     label: 'Trabajo',
     color: '#2196F3',
-    desc: 'Farm, hostelería, construcción y retail. Con o sin experiencia previa.',
+    desc: 'Ofertas reales de personas reales. Farm, hostelería, construcción y más.',
   },
   {
     icon: ShoppingBag,
     label: 'Compra y Venta',
     color: '#FF9800',
-    desc: 'Artículos de segunda mano, ropa, electrónica. Sin comisiones ni intermediarios.',
+    desc: 'Vende lo que ya no necesitas. Compra lo que alguien más ya no usa. Sin comisiones.',
   },
   {
     icon: Car,
     label: 'Viajes Compartidos',
     color: '#9C27B0',
-    desc: 'Comparte el viaje y los gastos con otros latinos que van en la misma dirección.',
+    desc: 'Alguien va en la misma dirección. Comparte el viaje y los costos.',
   },
   {
     icon: Users,
     label: 'Comunidad',
     color: '#F44336',
-    desc: 'Eventos, noticias y consejos para mantenerte conectado con tu comunidad en NZ.',
+    desc: 'Pregunta, comparte, conecta. Hay personas que ya recorrieron el mismo camino.',
   },
 ];
 
 const STEPS = [
   {
     n: '01',
-    title: 'Crea tu cuenta',
-    desc: 'Regístrate gratis en minutos. Solo necesitas tu correo electrónico.',
+    title: 'Crea tu perfil',
+    desc: 'Regístrate en minutos. Cuéntanos de dónde vienes y dónde estás.',
     icon: CheckCircle,
   },
   {
     n: '02',
-    title: 'Explora o publica',
-    desc: 'Busca lo que necesitas o publica lo que tienes. Sin tarifas ni intermediarios.',
-    icon: Star,
+    title: 'Encuentra lo que necesitas',
+    desc: 'Alojamiento, trabajo, viajes o comunidad. Todo en el mismo lugar.',
+    icon: MapPin,
   },
   {
     n: '03',
-    title: 'Conecta en tiempo real',
-    desc: 'Chatea directamente con otros latinos en NZ y coordina sin salir de la plataforma.',
+    title: 'Conecta con personas reales',
+    desc: 'Chatea directamente. Sin intermediarios, sin salir de la plataforma.',
     icon: MessageCircle,
   },
 ];
 
 const FEATURES = [
-  { icon: MessageCircle, title: 'Chat en tiempo real', desc: 'Mensajería instantánea con notificaciones. Sin esperas.' },
-  { icon: Shield, title: 'Seguro y privado', desc: 'Solo usuarios verificados. Reporta contenido inapropiado.' },
-  { icon: MapPin, title: 'Toda Nueva Zelanda', desc: 'Auckland, Wellington, Christchurch y más. Filtra por región.' },
-  { icon: Smartphone, title: 'App móvil', desc: 'Disponible para iOS y Android. Lleva la comunidad en tu bolsillo.' },
+  { icon: MessageCircle, title: 'Chat directo', desc: 'Mensajería instantánea con notificaciones. Sin necesidad de apps externas.' },
+  { icon: Shield, title: 'Solo personas reales', desc: 'Solo usuarios verificados. Reporta lo que no está bien.' },
+  { icon: MapPin, title: 'Toda Nueva Zelanda', desc: 'Auckland, Wellington, Christchurch y más. Filtra por ciudad.' },
+  { icon: Smartphone, title: 'App móvil (pronto)', desc: 'iOS y Android. La comunidad siempre a mano.' },
 ];
 
 const NZ_REGIONS = [
@@ -108,18 +108,17 @@ export default function LandingPage() {
         }`}
       >
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <span className="text-2xl select-none">✈️</span>
-            <span className={`font-black text-xl tracking-tight ${scrolled ? 'text-primary' : 'text-white'}`}>
-              Belfera
-            </span>
+          <Link to="/">
+            <img
+              src="/logo.png"
+              alt="Belfera"
+              className={`h-8 w-auto transition-all ${scrolled ? '' : 'brightness-0 invert'}`}
+            />
           </Link>
 
-          {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8">
             <a href="#modulos" className={`text-sm font-medium transition-colors hover:text-primary ${scrolled ? 'text-gray-600' : 'text-white/80'}`}>
-              Módulos
+              Qué hay aquí
             </a>
             <a href="#como-funciona" className={`text-sm font-medium transition-colors hover:text-primary ${scrolled ? 'text-gray-600' : 'text-white/80'}`}>
               Cómo funciona
@@ -138,11 +137,10 @@ export default function LandingPage() {
                   : 'bg-white text-primary hover:bg-green-50'
               }`}
             >
-              Registrarse gratis
+              Unirme gratis
             </Link>
           </nav>
 
-          {/* Mobile menu toggle */}
           <button
             className={`md:hidden p-2 rounded-lg ${scrolled ? 'text-gray-700' : 'text-white'}`}
             onClick={() => setMenuOpen(!menuOpen)}
@@ -151,14 +149,13 @@ export default function LandingPage() {
           </button>
         </div>
 
-        {/* Mobile menu */}
         {menuOpen && (
           <div className="md:hidden bg-white border-b border-gray-100 px-4 pb-4">
             <div className="flex flex-col gap-3 pt-2">
-              <a href="#modulos" className="text-sm font-medium text-gray-700 py-2" onClick={() => setMenuOpen(false)}>Módulos</a>
+              <a href="#modulos" className="text-sm font-medium text-gray-700 py-2" onClick={() => setMenuOpen(false)}>Qué hay aquí</a>
               <a href="#como-funciona" className="text-sm font-medium text-gray-700 py-2" onClick={() => setMenuOpen(false)}>Cómo funciona</a>
               <Link to="/login" className="text-sm font-semibold text-gray-700 py-2">Iniciar sesión</Link>
-              <Link to="/register" className="btn-primary text-center py-2.5 rounded-xl">Registrarse gratis</Link>
+              <Link to="/register" className="btn-primary text-center py-2.5 rounded-xl">Unirme gratis</Link>
             </div>
           </div>
         )}
@@ -166,7 +163,6 @@ export default function LandingPage() {
 
       {/* ── Hero ────────────────────────────────────────────── */}
       <section className="relative bg-gradient-to-br from-[#1a6b3c] via-[#1a6b3c] to-[#0d4525] min-h-screen flex items-center overflow-hidden">
-        {/* Decorative background circles */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full bg-white/[0.04]" />
           <div className="absolute top-1/2 -left-48 w-96 h-96 rounded-full bg-white/[0.04]" />
@@ -177,24 +173,23 @@ export default function LandingPage() {
         <div className="relative max-w-6xl mx-auto px-4 py-32 grid md:grid-cols-2 gap-12 items-center">
           {/* Left — text */}
           <div>
-            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-white/80 text-sm mb-8">
-              <MapPin size={13} />
-              Para latinos viviendo y trabajando en NZ
-            </div>
             <h1 className="text-5xl md:text-6xl font-black text-white leading-[1.1] mb-6">
-              Tu comunidad<br />
-              <span className="text-green-300">en Nueva Zelanda</span>
+              Nunca<br />
+              <span className="text-green-300">llegas solo.</span>
             </h1>
+            <p className="text-lg text-white/75 leading-relaxed mb-4 max-w-md">
+              Llegar a un país nuevo puede ser la mejor decisión de tu vida.
+            </p>
             <p className="text-lg text-white/75 leading-relaxed mb-10 max-w-md">
-              Alojamiento, trabajo, viajes y más. Todo en un solo lugar, en español,
-              para los latinos que viven en Nueva Zelanda.
+              También puede ser la más difícil. Belfera es donde encuentras personas
+              que ya estuvieron donde estás.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
                 to="/register"
                 className="inline-flex items-center gap-2.5 bg-white text-primary font-bold px-7 py-4 rounded-xl hover:bg-green-50 transition-colors shadow-lg shadow-black/20"
               >
-                Crear cuenta gratis
+                Unirme a la comunidad
                 <ArrowRight size={18} />
               </Link>
               <Link
@@ -208,7 +203,6 @@ export default function LandingPage() {
 
           {/* Right — floating cards */}
           <div className="hidden md:block relative h-[420px]">
-            {/* Card 1 — housing */}
             <div className="absolute top-0 left-8 w-64 bg-white rounded-2xl shadow-2xl p-4 rotate-[-3deg]">
               <div className="w-full h-28 rounded-xl bg-gradient-to-br from-green-100 to-green-200 mb-3 flex items-center justify-center">
                 <Home size={36} className="text-housing" />
@@ -220,7 +214,6 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Card 2 — trip */}
             <div className="absolute top-24 right-0 w-60 bg-white rounded-2xl shadow-2xl p-4 rotate-[2deg]">
               <div className="space-y-2">
                 <span className="badge" style={{ background: '#9C27B015', color: '#9C27B0', fontSize: '10px' }}>VIAJES</span>
@@ -237,7 +230,6 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Card 3 — job */}
             <div className="absolute bottom-0 left-16 w-56 bg-white rounded-2xl shadow-2xl p-4 rotate-[1deg]">
               <div className="space-y-1.5">
                 <span className="badge" style={{ background: '#2196F315', color: '#2196F3', fontSize: '10px' }}>TRABAJO</span>
@@ -247,14 +239,12 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Chat bubble */}
             <div className="absolute top-10 right-12 bg-primary text-white text-xs font-medium px-3 py-2 rounded-2xl rounded-tr-sm shadow-lg">
               ¡Hola! ¿Sigue disponible?
             </div>
           </div>
         </div>
 
-        {/* Bottom wave */}
         <div className="absolute bottom-0 inset-x-0">
           <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0 80L1440 80L1440 30C1200 80 900 0 720 30C540 60 240 0 0 30L0 80Z" fill="white" />
@@ -262,19 +252,18 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Stats ───────────────────────────────────────────── */}
-      <section className="bg-white py-16">
-        <div className="max-w-4xl mx-auto px-4 grid grid-cols-3 gap-8 text-center">
-          {[
-            { value: '5+', label: 'Módulos integrados' },
-            { value: '10+', label: 'Regiones en NZ' },
-            { value: '100%', label: 'Gratuito y en español' },
-          ].map(({ value, label }) => (
-            <div key={label}>
-              <p className="text-4xl md:text-5xl font-black text-primary mb-2">{value}</p>
-              <p className="text-gray-500 text-sm font-medium">{label}</p>
-            </div>
-          ))}
+      {/* ── Problem / Solution ──────────────────────────────── */}
+      <section className="bg-white py-20">
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <p className="text-gray-400 text-sm uppercase tracking-widest font-semibold mb-6">Por qué existe Belfera</p>
+          <p className="text-2xl md:text-3xl font-bold text-gray-900 leading-snug mb-6">
+            Toda la información estaba repartida entre grupos de Facebook,
+            chats de WhatsApp y páginas que nadie actualiza.
+          </p>
+          <p className="text-gray-500 text-lg leading-relaxed">
+            Belfera reúne todo eso en un solo lugar. Para que cuando llegues,
+            no tengas que empezar de cero ni solo.
+          </p>
         </div>
       </section>
 
@@ -282,12 +271,12 @@ export default function LandingPage() {
       <section id="modulos" className="bg-gray-50 py-24">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
-            <span className="text-primary font-semibold text-sm uppercase tracking-widest">Todo en un lugar</span>
+            <span className="text-primary font-semibold text-sm uppercase tracking-widest">Lo que hay aquí</span>
             <h2 className="text-4xl md:text-5xl font-black text-gray-900 mt-3 mb-4">
-              Cinco módulos,<br />un solo lugar
+              Todo lo que necesitas<br />cuando llegas
             </h2>
             <p className="text-gray-500 max-w-xl mx-auto">
-              Cada módulo está diseñado para las necesidades reales de los latinos que viven y trabajan en Nueva Zelanda.
+              Trabajo, alojamiento, viajes, compra y venta. Todo en un solo lugar, en español.
             </p>
           </div>
 
@@ -311,19 +300,19 @@ export default function LandingPage() {
             {/* CTA card */}
             <div className="bg-primary rounded-2xl p-6 shadow-sm flex flex-col justify-between">
               <div>
-                <p className="text-green-200 text-sm font-semibold uppercase tracking-widest mb-3">Ya disponible</p>
+                <p className="text-green-200 text-sm font-semibold uppercase tracking-widest mb-3">Empieza hoy</p>
                 <h3 className="font-black text-white text-2xl leading-snug mb-3">
-                  ¿Listo para empezar?
+                  Empieza acompañado.
                 </h3>
                 <p className="text-white/70 text-sm leading-relaxed">
-                  Únete a la comunidad. Es gratis, en español y pensado para ti.
+                  La comunidad está aquí. Gratis, en español, para personas que empiezan de nuevo.
                 </p>
               </div>
               <Link
                 to="/register"
                 className="mt-6 inline-flex items-center gap-2 bg-white text-primary font-bold px-5 py-3 rounded-xl hover:bg-green-50 transition-colors self-start text-sm"
               >
-                Crear cuenta
+                Unirme
                 <ArrowRight size={16} />
               </Link>
             </div>
@@ -335,14 +324,13 @@ export default function LandingPage() {
       <section id="como-funciona" className="bg-white py-24">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
-            <span className="text-primary font-semibold text-sm uppercase tracking-widest">Simple y rápido</span>
+            <span className="text-primary font-semibold text-sm uppercase tracking-widest">Así de simple</span>
             <h2 className="text-4xl md:text-5xl font-black text-gray-900 mt-3">
-              Empieza en tres pasos
+              Tres pasos, una comunidad
             </h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 relative">
-            {/* Connector line (desktop) */}
             <div className="hidden md:block absolute top-10 left-[calc(16.67%+2rem)] right-[calc(16.67%+2rem)] h-px bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 z-0" />
 
             {STEPS.map(({ n, title, desc }) => (
@@ -363,10 +351,10 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-black text-gray-900">
-              Diseñado para la comunidad
+              Pensado para personas,<br />no para procesos
             </h2>
             <p className="text-gray-500 mt-4 max-w-lg mx-auto">
-              Cada detalle fue pensado para hacer la vida más fácil a los hispanohablantes que viven, trabajan y se mueven por el mundo.
+              Cada detalle existe para una sola razón: que nunca tengas que empezar de cero solo.
             </p>
           </div>
 
@@ -384,7 +372,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Countries ──────────────────────────────────────── */}
+      {/* ── Regions ─────────────────────────────────────────── */}
       <section className="bg-white py-16">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-6">
@@ -409,18 +397,18 @@ export default function LandingPage() {
         </div>
         <div className="relative max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
-            La comunidad latina<br />
-            <span className="text-green-300">te espera en NZ</span>
+            Nunca<br />
+            <span className="text-green-300">llegas solo.</span>
           </h2>
           <p className="text-white/70 text-lg mb-10">
-            Únete gratis y conecta con latinos que ya están viviendo y trabajando en Nueva Zelanda.
+            Hay una comunidad esperándote. Gratis, en español, pensada para personas que empiezan de nuevo.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               to="/register"
               className="inline-flex items-center gap-2.5 bg-white text-primary font-bold px-8 py-4 rounded-xl hover:bg-green-50 transition-colors shadow-lg shadow-black/20"
             >
-              Crear cuenta gratis
+              Unirme a la comunidad
               <ArrowRight size={18} />
             </Link>
             <Link
@@ -431,7 +419,6 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* App badges */}
           <div className="mt-12 flex flex-col items-center gap-3">
             <p className="text-white/50 text-sm">También disponible como app móvil</p>
             <div className="flex gap-3">
@@ -452,25 +439,23 @@ export default function LandingPage() {
       <footer className="bg-gray-900 text-gray-400 py-12">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between gap-8 mb-10">
-            {/* Brand */}
             <div className="max-w-xs">
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-2xl">✈️</span>
                 <span className="font-black text-white text-lg">Belfera</span>
               </div>
               <p className="text-sm leading-relaxed">
-                La plataforma para latinos en Nueva Zelanda. Gratis, en español, sin intermediarios.
+                Belfera es el lugar donde las personas se acompañan cuando comienzan una nueva vida lejos de casa.
               </p>
             </div>
 
-            {/* Links */}
             <div className="grid grid-cols-2 gap-8">
               <div>
-                <p className="text-white font-semibold text-sm mb-4">Plataforma</p>
+                <p className="text-white font-semibold text-sm mb-4">Comunidad</p>
                 <ul className="space-y-2 text-sm">
-                  <li><a href="#modulos" className="hover:text-white transition-colors">Módulos</a></li>
+                  <li><a href="#modulos" className="hover:text-white transition-colors">Qué hay aquí</a></li>
                   <li><a href="#como-funciona" className="hover:text-white transition-colors">Cómo funciona</a></li>
-                  <li><Link to="/register" className="hover:text-white transition-colors">Registrarse</Link></li>
+                  <li><Link to="/register" className="hover:text-white transition-colors">Unirme gratis</Link></li>
                   <li><Link to="/login" className="hover:text-white transition-colors">Iniciar sesión</Link></li>
                 </ul>
               </div>

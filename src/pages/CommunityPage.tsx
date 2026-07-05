@@ -10,7 +10,7 @@ import { PostModuleKey } from '../constants';
 export default function CommunityPage() {
   const navigate = useNavigate();
   const filters = { module: 'COMMUNITY' as PostModuleKey };
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isError, refetch } = usePosts(filters);
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, refetch } = usePosts(filters);
   const observer = useRef<IntersectionObserver | null>(null);
 
   const lastRef = useCallback(
@@ -38,7 +38,11 @@ export default function CommunityPage() {
         </button>
       </div>
 
-      {posts.length === 0 && !isFetchingNextPage ? (
+      {isLoading ? (
+        <div className="flex justify-center py-16">
+          <div className="animate-spin w-8 h-8 rounded-full border-4 border-primary border-t-transparent" />
+        </div>
+      ) : posts.length === 0 ? (
         <EmptyState icon={Users} title="Sin publicaciones" subtitle="Sé el primero en publicar en tu comunidad." actionLabel="Crear publicación" onAction={() => navigate('/posts/new')} />
       ) : (
         <div className="space-y-4">

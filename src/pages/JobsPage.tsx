@@ -10,7 +10,7 @@ import { PostModuleKey } from '../constants';
 export default function JobsPage() {
   const navigate = useNavigate();
   const filters = { module: 'JOBS' as PostModuleKey };
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isError, refetch } = usePosts(filters);
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, refetch } = usePosts(filters);
   const observer = useRef<IntersectionObserver | null>(null);
 
   const lastRef = useCallback(
@@ -41,7 +41,11 @@ export default function JobsPage() {
         </button>
       </div>
 
-      {posts.length === 0 && !isFetchingNextPage ? (
+      {isLoading ? (
+        <div className="flex justify-center py-16">
+          <div className="animate-spin w-8 h-8 rounded-full border-4 border-primary border-t-transparent" />
+        </div>
+      ) : posts.length === 0 ? (
         <EmptyState
           icon={Briefcase}
           title="Sin publicaciones"

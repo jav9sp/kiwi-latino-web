@@ -10,7 +10,7 @@ import { POST_MODULES, NZ_CITIES } from '../constants';
 
 export default function FeedPage() {
   const { filters, setFilters, resetFilters } = usePostStore();
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isError, refetch } = usePosts(filters);
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, refetch } = usePosts(filters);
   const navigate = useNavigate();
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -71,7 +71,11 @@ export default function FeedPage() {
         </div>
       </div>
 
-      {posts.length === 0 && !isFetchingNextPage ? (
+      {isLoading ? (
+        <div className="flex justify-center py-16">
+          <div className="animate-spin w-8 h-8 rounded-full border-4 border-primary border-t-transparent" />
+        </div>
+      ) : posts.length === 0 ? (
         <EmptyState icon={Search} title="Sin publicaciones" subtitle="No hay publicaciones con estos filtros." actionLabel="Limpiar filtros" onAction={resetFilters} />
       ) : (
         <div className="space-y-4">
