@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowLeft, RefreshCw } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 
 const MODULE_CHIPS = [
@@ -17,20 +17,42 @@ export default function LoginPage() {
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuthStore();
+  const [unverifiedEmail, setUnverifiedEmail] = useState('');
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendSent, setResendSent] = useState(false);
+  const { login, resendVerification } = useAuthStore();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setUnverifiedEmail('');
+    setResendSent(false);
     setLoading(true);
     try {
       await login({ email, password });
       navigate('/feed');
-    } catch {
-      setError('Correo o contraseña incorrectos.');
+    } catch (err: unknown) {
+      const resp = (err as { response?: { data?: { error?: string; email?: string } } })?.response;
+      if (resp?.data?.error === 'EMAIL_NOT_VERIFIED') {
+        setUnverifiedEmail(resp.data?.email ?? email);
+      } else {
+        setError('Correo o contraseña incorrectos.');
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setResendLoading(true);
+    try {
+      await resendVerification(unverifiedEmail);
+      setResendSent(true);
+    } catch {
+      // silently ignore — backend always returns 200
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -123,6 +145,31 @@ export default function LoginPage() {
               <div className="flex items-start gap-2.5 bg-red-50 border border-red-100 text-red-600 text-sm px-4 py-3 rounded-xl">
                 <span className="shrink-0 mt-0.5">⚠</span>
                 {error}
+              </div>
+            )}
+
+            {unverifiedEmail && (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm">
+                <p className="text-amber-800 font-semibold mb-0.5">Correo no verificado</p>
+                <p className="text-amber-700 text-xs mb-3">
+                  Debes verificar tu correo antes de iniciar sesión.
+                  Revisa tu bandeja de entrada en <strong>{unverifiedEmail}</strong>.
+                </p>
+                {resendSent ? (
+                  <p className="text-green-700 text-xs font-medium flex items-center gap-1.5">
+                    <Mail size={13} /> Enlace reenviado. Revisa tu correo.
+                  </p>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleResend}
+                    disabled={resendLoading}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-800 hover:text-amber-900 disabled:opacity-50 transition-colors"
+                  >
+                    <RefreshCw size={12} className={resendLoading ? 'animate-spin' : ''} />
+                    {resendLoading ? 'Enviando...' : 'Reenviar enlace de verificación'}
+                  </button>
+                )}
               </div>
             )}
 

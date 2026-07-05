@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, User, MapPin, ArrowLeft, CheckCircle } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { NZ_CITIES, LATAM_COUNTRIES, getFlagEmoji } from '../constants';
@@ -16,8 +16,9 @@ export default function RegisterPage() {
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [registered, setRegistered] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState('');
   const { register } = useAuthStore();
-  const navigate = useNavigate();
 
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -34,7 +35,8 @@ export default function RegisterPage() {
         cityNz: form.city || undefined,
         countryOrigin: form.country || undefined,
       });
-      navigate('/feed');
+      setRegisteredEmail(form.email);
+      setRegistered(true);
     } catch (err: unknown) {
       const data = (err as { response?: { data?: { error?: string; message?: string } } })?.response?.data;
       setError(data?.error ?? data?.message ?? 'Error al registrarse. Intenta de nuevo.');
@@ -44,6 +46,32 @@ export default function RegisterPage() {
   };
 
   const selectedCountry = LATAM_COUNTRIES.find((c) => c.code === form.country);
+
+  if (registered) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+        <div className="max-w-md w-full text-center">
+          <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5">
+            <Mail size={28} className="text-primary" />
+          </div>
+          <h1 className="text-2xl font-black text-gray-900 mb-2">Revisa tu correo</h1>
+          <p className="text-gray-500 mb-1 text-sm">
+            Enviamos un enlace de verificación a:
+          </p>
+          <p className="font-semibold text-gray-800 mb-6 text-sm">{registeredEmail}</p>
+          <p className="text-gray-400 text-xs leading-relaxed mb-8">
+            Haz clic en el enlace del correo para activar tu cuenta. Si no lo ves, revisa la carpeta de spam.
+          </p>
+          <Link
+            to="/login"
+            className="inline-block px-6 py-2.5 bg-primary text-white font-semibold rounded-xl text-sm hover:bg-primary/90 transition-colors"
+          >
+            Ir al inicio de sesión
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex">

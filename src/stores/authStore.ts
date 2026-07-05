@@ -11,6 +11,7 @@ interface AuthState {
   logout: () => void;
   loadUser: () => Promise<void>;
   updateProfile: (p: Partial<User>) => Promise<void>;
+  resendVerification: (email: string) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -25,10 +26,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   register: async (payload) => {
-    const { data } = await api.post<{ data: { user: User; tokens: AuthTokens } }>('/auth/register', payload);
-    tokenStorage.set('accessToken', data.data.tokens.accessToken);
-    tokenStorage.set('refreshToken', data.data.tokens.refreshToken);
-    set({ user: data.data.user });
+    await api.post('/auth/register', payload);
+    // backend now requires email verification before login — no tokens returned
   },
 
   logout: () => {
@@ -53,5 +52,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   updateProfile: async (payload) => {
     const { data } = await api.patch<{ data: User }>('/users/me', payload);
     set((s) => ({ user: { ...s.user!, ...data.data } }));
+  },
+
+  resendVerification: async (email) => {
+    await api.post('/auth/resend-verification', { email });
   },
 }));
