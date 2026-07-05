@@ -7,7 +7,7 @@ import Flag from '../components/Flag';
 
 const BENEFITS = [
   'Publica arriendos, trabajo y más sin comisiones',
-  'Conecta con latinos en tu ciudad de NZ',
+  'Conecta con hispanohablantes en tu país de destino',
   'Chat en tiempo real, sin aplicaciones externas',
 ];
 
@@ -56,8 +56,8 @@ export default function RegisterPage() {
 
         {/* Logo */}
         <Link to="/landing" className="relative z-10 flex items-center gap-2.5 w-fit">
-          <span className="text-2xl select-none">🥝</span>
-          <span className="font-black text-white text-xl">Kiwi Latino</span>
+          <span className="text-2xl select-none">✈️</span>
+          <span className="font-black text-white text-xl">Belfera</span>
         </Link>
 
         {/* Headline + benefits */}
@@ -106,8 +106,8 @@ export default function RegisterPage() {
         {/* Header mobile */}
         <div className="lg:hidden flex items-center justify-between mb-8">
           <Link to="/landing" className="flex items-center gap-2">
-            <span className="text-xl">🥝</span>
-            <span className="font-black text-primary text-lg">Kiwi Latino</span>
+            <span className="text-xl">✈️</span>
+            <span className="font-black text-primary text-lg">Belfera</span>
           </Link>
           <Link to="/landing" className="text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1 transition-colors">
             <ArrowLeft size={14} /> Inicio
@@ -126,7 +126,7 @@ export default function RegisterPage() {
           </Link>
 
           <h1 className="text-3xl font-black text-gray-900 mb-1">Crear cuenta</h1>
-          <p className="text-gray-500 mb-7 text-sm">Gratis · En español · Para latinos en NZ</p>
+          <p className="text-gray-500 mb-7 text-sm">Gratis · En español · Para latinos en Nueva Zelanda</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
 
@@ -195,7 +195,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* País */}
+            {/* País de origen */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">País de origen</label>
               <div className="relative">
@@ -207,7 +207,7 @@ export default function RegisterPage() {
                   <span className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-base select-none">🌎</span>
                 )}
                 <select
-                  className={`input py-3 ${selectedCountry ? 'pl-10' : 'pl-10'} appearance-none`}
+                  className="input py-3 pl-10 appearance-none"
                   value={form.country}
                   onChange={set('country')}
                 >
@@ -221,7 +221,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Ciudad NZ */}
+            {/* Ciudad en NZ */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">
                 Ciudad en NZ{' '}

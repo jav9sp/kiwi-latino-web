@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useCreateTrip } from '../hooks/useTrips';
-import { NZ_CITIES } from '../constants';
 
 export default function CreateTripPage() {
   const navigate = useNavigate();
@@ -12,7 +11,7 @@ export default function CreateTripPage() {
   });
   const [error, setError] = useState('');
 
-  const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+  const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,17 +48,25 @@ export default function CreateTripPage() {
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-sm font-medium mb-1">Origen</label>
-            <select className="input" value={form.origin} onChange={set('origin')} required>
-              <option value="">Selecciona</option>
-              {NZ_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
+            <input
+              type="text"
+              className="input"
+              value={form.origin}
+              onChange={set('origin')}
+              placeholder="Ej. Auckland"
+              required
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Destino</label>
-            <select className="input" value={form.destination} onChange={set('destination')} required>
-              <option value="">Selecciona</option>
-              {NZ_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
+            <input
+              type="text"
+              className="input"
+              value={form.destination}
+              onChange={set('destination')}
+              placeholder="Ej. Wellington"
+              required
+            />
           </div>
         </div>
         <div>
@@ -72,8 +79,8 @@ export default function CreateTripPage() {
             <input type="number" min="1" max="8" className="input" value={form.seatsTotal} onChange={set('seatsTotal')} required />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Precio por asiento (NZD)</label>
-            <input type="number" min="0" className="input" value={form.costPerPerson} onChange={set('costPerPerson')} placeholder="Opcional" />
+            <label className="block text-sm font-medium mb-1">Precio por asiento (opcional)</label>
+            <input type="number" min="0" className="input" value={form.costPerPerson} onChange={set('costPerPerson')} placeholder="0" />
           </div>
         </div>
         <div>

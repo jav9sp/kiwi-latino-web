@@ -4,7 +4,7 @@ import { Eye, EyeOff, Mail, Lock, ArrowLeft } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 
 const MODULE_CHIPS = [
-  { label: 'Arriendos', color: '#4CAF50' },
+  { label: 'Alojamiento', color: '#4CAF50' },
   { label: 'Trabajo', color: '#2196F3' },
   { label: 'Marketplace', color: '#FF9800' },
   { label: 'Viajes', color: '#9C27B0' },
@@ -45,8 +45,8 @@ export default function LoginPage() {
 
         {/* Logo */}
         <Link to="/landing" className="relative z-10 flex items-center gap-2.5 w-fit">
-          <span className="text-2xl select-none">🥝</span>
-          <span className="font-black text-white text-xl">Kiwi Latino</span>
+          <span className="text-2xl select-none">✈️</span>
+          <span className="font-black text-white text-xl">Belfera</span>
         </Link>
 
         {/* Headline + chips */}
@@ -57,7 +57,7 @@ export default function LoginPage() {
             <span className="text-green-300">Nueva Zelanda</span>
           </h2>
           <p className="text-white/65 text-sm leading-relaxed mb-8 max-w-xs">
-            Arriendos, trabajo, viajes y comunidad. Todo en un solo lugar, en español, sin costo.
+            Alojamiento, trabajo, viajes y comunidad. Todo en un solo lugar, en español, sin costo.
           </p>
           <div className="flex flex-wrap gap-2">
             {MODULE_CHIPS.map(({ label, color }) => (
@@ -75,7 +75,7 @@ export default function LoginPage() {
         {/* Testimonial */}
         <div className="relative z-10 bg-white/10 border border-white/20 rounded-2xl p-5">
           <p className="text-white/90 text-sm italic leading-relaxed mb-4">
-            "Encontré trabajo en una semana y después un arriendo cerca de la planta. Kiwi Latino me cambió la vida acá."
+            "Encontré trabajo en una semana y después un arriendo cerca de la ciudad. Belfera me cambió la vida acá."
           </p>
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-green-400/30 flex items-center justify-center text-white font-bold text-sm shrink-0">
@@ -95,8 +95,8 @@ export default function LoginPage() {
         {/* Header mobile */}
         <div className="lg:hidden flex items-center justify-between mb-10">
           <Link to="/landing" className="flex items-center gap-2">
-            <span className="text-xl">🥝</span>
-            <span className="font-black text-primary text-lg">Kiwi Latino</span>
+            <span className="text-xl">✈️</span>
+            <span className="font-black text-primary text-lg">Belfera</span>
           </Link>
           <Link to="/landing" className="text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1 transition-colors">
             <ArrowLeft size={14} /> Inicio

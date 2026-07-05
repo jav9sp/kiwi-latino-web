@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom';
-import { Home, Car, Users, MessageCircle, User, LogOut, Leaf, Building2, Briefcase, Menu, X, LayoutDashboard, Bookmark } from 'lucide-react';
+import { Home, Car, Users, MessageCircle, User, LogOut, Plane, Building2, Briefcase, Menu, X, LayoutDashboard, Bookmark } from 'lucide-react';
 import Flag from './Flag';
 import { useAuthStore } from '../stores/authStore';
 import { useUnreadCount } from '../hooks/useMessages';
@@ -53,8 +53,8 @@ export default function Layout() {
       {/* ── Desktop sidebar ── */}
       <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 shrink-0">
         <Link to="/feed" className="flex items-center gap-2 px-6 py-5 border-b border-gray-100 hover:bg-gray-50 transition-colors">
-          <Leaf className="text-primary" size={24} />
-          <span className="font-bold text-lg text-primary">Kiwi Latino</span>
+          <Plane className="text-primary" size={22} />
+          <span className="font-bold text-lg text-primary">Belfera</span>
         </Link>
 
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
@@ -79,7 +79,7 @@ export default function Layout() {
                 {user?.name}
                 {user?.countryOrigin && <Flag code={user.countryOrigin} size={14} className="ml-1" />}
               </p>
-              <p className="text-xs text-gray-500 truncate">{user?.cityNz ?? 'NZ'}</p>
+              <p className="text-xs text-gray-500 truncate">{user?.cityNz ?? ''}</p>
             </div>
           </Link>
           <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2 w-full rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors">
@@ -97,8 +97,8 @@ export default function Layout() {
       <div className={`md:hidden fixed inset-y-0 left-0 w-72 bg-white z-50 flex flex-col shadow-2xl transition-transform duration-300 ease-in-out ${drawerOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100">
           <Link to="/feed" onClick={closeDrawer} className="flex items-center gap-2">
-            <Leaf className="text-primary" size={22} />
-            <span className="font-bold text-lg text-primary">Kiwi Latino</span>
+            <Plane className="text-primary" size={20} />
+            <span className="font-bold text-lg text-primary">Belfera</span>
           </Link>
           <button onClick={closeDrawer} className="btn-ghost p-2 -mr-2"><X size={20} /></button>
         </div>
@@ -124,7 +124,7 @@ export default function Layout() {
                 {user?.name}
                 {user?.countryOrigin && <Flag code={user.countryOrigin} size={14} className="ml-1" />}
               </p>
-              <p className="text-xs text-gray-500 truncate">{user?.cityNz ?? 'NZ'}</p>
+              <p className="text-xs text-gray-500 truncate">{user?.cityNz ?? ''}</p>
             </div>
           </Link>
           <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 w-full rounded-lg text-sm text-red-600 hover:bg-red-50 transition-colors">
@@ -142,8 +142,8 @@ export default function Layout() {
           )}
         </button>
         <Link to="/feed" className="flex items-center gap-1.5 absolute left-1/2 -translate-x-1/2">
-          <Leaf className="text-primary" size={20} />
-          <span className="font-bold text-primary">Kiwi Latino</span>
+          <Plane className="text-primary" size={18} />
+          <span className="font-bold text-primary">Belfera</span>
         </Link>
         <div className="flex items-center gap-1">
           <Link to="/messages" className="btn-ghost p-2 relative">

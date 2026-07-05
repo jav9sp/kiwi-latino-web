@@ -33,9 +33,9 @@ export function getFlagEmoji(countryCode: string): string {
 }
 
 export const NZ_CITIES = [
-  'Auckland', 'Wellington', 'Christchurch', 'Hamilton', 'Tauranga',
-  'Dunedin', 'Napier-Hastings', 'Palmerston North', 'Nelson', 'Queenstown',
-  'Rotorua', 'Whangarei', 'New Plymouth', 'Invercargill',
+  'Auckland', 'Wellington', 'Christchurch', 'Hamilton',
+  'Tauranga', 'Napier', 'Palmerston North', 'Dunedin',
+  'Nelson', 'Queenstown',
 ] as const;
 
 export type NZCity = (typeof NZ_CITIES)[number];

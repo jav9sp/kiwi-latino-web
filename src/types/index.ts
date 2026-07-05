@@ -1,4 +1,4 @@
-import { NZCity, PostModuleKey } from '../constants';
+import { PostModuleKey } from '../constants';
 
 export interface User {
   id: string;
@@ -23,6 +23,7 @@ export interface Post {
   description: string;
   city: string;
   price?: number;
+  currency?: string;
   images?: string[];
   status: 'ACTIVE' | 'CLOSED';
   createdAt: string;
@@ -35,7 +36,7 @@ export interface Post {
 }
 
 export interface PostFilters {
-  module?: PostModuleKey; city?: NZCity | string;
+  module?: PostModuleKey; city?: string;
   minPrice?: number; maxPrice?: number;
   tipoAlojamiento?: string; disponibleDesde?: string;
   tipoTrabajo?: string; categoria?: string; condicion?: string;
@@ -54,7 +55,7 @@ export interface Trip {
   origin: string; destination: string;
   departureDate: string;
   seatsTotal: number; seatsAvailable: number;
-  costPerPerson?: number; notes?: string;
+  costPerPerson?: number; currency?: string; notes?: string;
   status: TripStatus; createdAt: string;
 }
 

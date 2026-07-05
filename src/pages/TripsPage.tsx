@@ -1,12 +1,10 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Car } from 'lucide-react';
 import { useTrips } from '../hooks/useTrips';
 import TripCard from '../components/TripCard';
 import EmptyState from '../components/EmptyState';
 import ErrorState from '../components/ErrorState';
-import { NZ_CITIES } from '../constants';
-import { useState } from 'react';
 import { TripFilters } from '../types';
 
 export default function TripsPage() {
@@ -42,14 +40,20 @@ export default function TripsPage() {
 
       <div className="card p-3 mb-5">
         <div className="grid grid-cols-2 gap-2">
-          <select className="input text-sm py-1.5" value={filters.origin ?? ''} onChange={(e) => setFilters((f) => ({ ...f, origin: e.target.value || undefined }))}>
-            <option value="">Origen</option>
-            {NZ_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
-          <select className="input text-sm py-1.5" value={filters.destination ?? ''} onChange={(e) => setFilters((f) => ({ ...f, destination: e.target.value || undefined }))}>
-            <option value="">Destino</option>
-            {NZ_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
+          <input
+            type="text"
+            className="input text-sm py-1.5"
+            placeholder="Origen"
+            value={filters.origin ?? ''}
+            onChange={(e) => setFilters((f) => ({ ...f, origin: e.target.value || undefined }))}
+          />
+          <input
+            type="text"
+            className="input text-sm py-1.5"
+            placeholder="Destino"
+            value={filters.destination ?? ''}
+            onChange={(e) => setFilters((f) => ({ ...f, destination: e.target.value || undefined }))}
+          />
           <input type="date" className="input text-sm py-1.5" value={filters.date ?? ''} onChange={(e) => setFilters((f) => ({ ...f, date: e.target.value || undefined }))} />
           <select className="input text-sm py-1.5" value={filters.status ?? ''} onChange={(e) => setFilters((f) => ({ ...f, status: (e.target.value as TripFilters['status']) || undefined }))}>
             <option value="">Todos</option>

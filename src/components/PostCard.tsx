@@ -33,7 +33,7 @@ export default function PostCard({ post }: Props) {
             </span>
           )}
           {post.price != null && (
-            <span className="badge bg-gray-100 text-gray-700">${post.price} NZD</span>
+            <span className="badge bg-gray-100 text-gray-700">${post.price} {post.currency ?? 'NZD'}</span>
           )}
         </div>
         <div className="flex items-center gap-1 text-gray-400 shrink-0 text-xs">

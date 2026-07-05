@@ -68,7 +68,7 @@ export default function TripDetailPage() {
           {trip.costPerPerson != null && (
             <div className="bg-gray-50 rounded-xl p-3">
               <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-1"><DollarSign size={13} /> Costo por persona</div>
-              <p className="text-sm font-semibold">${trip.costPerPerson} NZD</p>
+              <p className="text-sm font-semibold">{trip.costPerPerson} {trip.currency ?? 'NZD'}</p>
             </div>
           )}
           <div className="bg-gray-50 rounded-xl p-3">

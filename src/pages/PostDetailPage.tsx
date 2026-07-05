@@ -59,7 +59,7 @@ export default function PostDetailPage() {
           <div className="flex items-center gap-2 mb-3 flex-wrap">
             {mod && <span className="badge text-white text-xs" style={{ backgroundColor: mod.color }}>{mod.label}</span>}
             <span className="flex items-center gap-1 text-xs text-gray-500"><MapPin size={12} /> {post.city}</span>
-            {post.price != null && <span className="badge bg-gray-100 text-gray-700">${post.price} NZD</span>}
+            {post.price != null && <span className="badge bg-gray-100 text-gray-700">${post.price} {post.currency ?? 'NZD'}</span>}
           </div>
 
           <h1 className="text-xl font-bold mb-2">{post.title}</h1>

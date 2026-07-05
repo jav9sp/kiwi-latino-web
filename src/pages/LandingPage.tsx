@@ -10,38 +10,33 @@ import { useAuthStore } from '../stores/authStore';
 const MODULES = [
   {
     icon: Home,
-    label: 'Arriendos',
+    label: 'Alojamiento',
     color: '#4CAF50',
-    bgClass: 'bg-housing',
-    desc: 'Piezas, casas y alojamiento temporal. Encuentra dónde quedarte cerca de tu trabajo.',
+    desc: 'Piezas, cuartos y alojamiento temporal. Encuentra dónde quedarte en NZ.',
   },
   {
     icon: Briefcase,
     label: 'Trabajo',
     color: '#2196F3',
-    bgClass: 'bg-jobs',
-    desc: 'Farm, hostelería, construcción y retail. Con o sin experiencia previa en NZ.',
+    desc: 'Farm, hostelería, construcción y retail. Con o sin experiencia previa.',
   },
   {
     icon: ShoppingBag,
     label: 'Compra y Venta',
     color: '#FF9800',
-    bgClass: 'bg-marketplace',
     desc: 'Artículos de segunda mano, ropa, electrónica. Sin comisiones ni intermediarios.',
   },
   {
     icon: Car,
     label: 'Viajes Compartidos',
     color: '#9C27B0',
-    bgClass: 'bg-trips',
-    desc: 'Comparte el auto y los gastos con compatriotas que van en la misma dirección.',
+    desc: 'Comparte el viaje y los gastos con otros latinos que van en la misma dirección.',
   },
   {
     icon: Users,
     label: 'Comunidad',
     color: '#F44336',
-    bgClass: 'bg-community',
-    desc: 'Eventos, noticias y consejos para mantenerte conectado con tu comunidad.',
+    desc: 'Eventos, noticias y consejos para mantenerte conectado con tu comunidad en NZ.',
   },
 ];
 
@@ -49,7 +44,7 @@ const STEPS = [
   {
     n: '01',
     title: 'Crea tu cuenta',
-    desc: 'Regístrate gratis en minutos. Solo necesitas tu correo y ciudad en Nueva Zelanda.',
+    desc: 'Regístrate gratis en minutos. Solo necesitas tu correo electrónico.',
     icon: CheckCircle,
   },
   {
@@ -61,7 +56,7 @@ const STEPS = [
   {
     n: '03',
     title: 'Conecta en tiempo real',
-    desc: 'Chatea directamente con otros latinos y coordina sin salir de la plataforma.',
+    desc: 'Chatea directamente con otros latinos en NZ y coordina sin salir de la plataforma.',
     icon: MessageCircle,
   },
 ];
@@ -69,14 +64,14 @@ const STEPS = [
 const FEATURES = [
   { icon: MessageCircle, title: 'Chat en tiempo real', desc: 'Mensajería instantánea con notificaciones. Sin esperas.' },
   { icon: Shield, title: 'Seguro y privado', desc: 'Solo usuarios verificados. Reporta contenido inapropiado.' },
-  { icon: MapPin, title: 'Por ciudad en NZ', desc: 'Auckland, Wellington, Christchurch y más. Filtra por tu zona.' },
+  { icon: MapPin, title: 'Toda Nueva Zelanda', desc: 'Auckland, Wellington, Christchurch y más. Filtra por región.' },
   { icon: Smartphone, title: 'App móvil', desc: 'Disponible para iOS y Android. Lleva la comunidad en tu bolsillo.' },
 ];
 
-const CITIES = [
-  'Auckland', 'Wellington', 'Christchurch', 'Hamilton',
-  'Tauranga', 'Dunedin', 'Napier', 'Palmerston North',
-  'Nelson', 'Rotorua',
+const NZ_REGIONS = [
+  'Auckland', 'Wellington', 'Christchurch', 'Queenstown',
+  'Hamilton', 'Dunedin', 'Tauranga', "Hawke's Bay",
+  'Rotorua', 'Nelson',
 ];
 
 export default function LandingPage() {
@@ -115,9 +110,9 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <span className="text-2xl select-none">🥝</span>
+            <span className="text-2xl select-none">✈️</span>
             <span className={`font-black text-xl tracking-tight ${scrolled ? 'text-primary' : 'text-white'}`}>
-              Kiwi Latino
+              Belfera
             </span>
           </Link>
 
@@ -184,15 +179,15 @@ export default function LandingPage() {
           <div>
             <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-white/80 text-sm mb-8">
               <MapPin size={13} />
-              Para latinos en Nueva Zelanda
+              Para latinos viviendo y trabajando en NZ
             </div>
             <h1 className="text-5xl md:text-6xl font-black text-white leading-[1.1] mb-6">
               Tu comunidad<br />
-              <span className="text-green-300">donde estés</span>
+              <span className="text-green-300">en Nueva Zelanda</span>
             </h1>
             <p className="text-lg text-white/75 leading-relaxed mb-10 max-w-md">
-              Arriendos, trabajo, viajes y más. Todo en un solo lugar, en español,
-              pensado para la comunidad latina viviendo en NZ.
+              Alojamiento, trabajo, viajes y más. Todo en un solo lugar, en español,
+              para los latinos que viven en Nueva Zelanda.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
@@ -213,15 +208,15 @@ export default function LandingPage() {
 
           {/* Right — floating cards */}
           <div className="hidden md:block relative h-[420px]">
-            {/* Card 1 — housing post */}
+            {/* Card 1 — housing */}
             <div className="absolute top-0 left-8 w-64 bg-white rounded-2xl shadow-2xl p-4 rotate-[-3deg]">
               <div className="w-full h-28 rounded-xl bg-gradient-to-br from-green-100 to-green-200 mb-3 flex items-center justify-center">
                 <Home size={36} className="text-housing" />
               </div>
               <div className="space-y-1.5">
-                <span className="badge" style={{ background: '#4CAF5015', color: '#4CAF50', fontSize: '10px' }}>ARRIENDOS</span>
-                <p className="font-semibold text-gray-900 text-sm">Pieza en Auckland CBD</p>
-                <p className="text-gray-500 text-xs flex items-center gap-1"><MapPin size={10} /> Auckland · $250/sem</p>
+                <span className="badge" style={{ background: '#4CAF5015', color: '#4CAF50', fontSize: '10px' }}>ALOJAMIENTO</span>
+                <p className="font-semibold text-gray-900 text-sm">Pieza disponible en Auckland</p>
+                <p className="text-gray-500 text-xs flex items-center gap-1"><MapPin size={10} /> Auckland CBD · $300/sem</p>
               </div>
             </div>
 
@@ -246,7 +241,7 @@ export default function LandingPage() {
             <div className="absolute bottom-0 left-16 w-56 bg-white rounded-2xl shadow-2xl p-4 rotate-[1deg]">
               <div className="space-y-1.5">
                 <span className="badge" style={{ background: '#2196F315', color: '#2196F3', fontSize: '10px' }}>TRABAJO</span>
-                <p className="font-semibold text-gray-900 text-sm">Farm worker — Hawke's Bay</p>
+                <p className="font-semibold text-gray-900 text-sm">Farm worker — Hawke's Bay, NZ</p>
                 <p className="text-gray-500 text-xs">$25/hr · Disponible ya</p>
                 <p className="text-gray-400 text-xs">No se requiere experiencia previa</p>
               </div>
@@ -272,7 +267,7 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto px-4 grid grid-cols-3 gap-8 text-center">
           {[
             { value: '5+', label: 'Módulos integrados' },
-            { value: '10+', label: 'Ciudades en NZ' },
+            { value: '10+', label: 'Regiones en NZ' },
             { value: '100%', label: 'Gratuito y en español' },
           ].map(({ value, label }) => (
             <div key={label}>
@@ -292,7 +287,7 @@ export default function LandingPage() {
               Cinco módulos,<br />un solo lugar
             </h2>
             <p className="text-gray-500 max-w-xl mx-auto">
-              Cada módulo está diseñado para las necesidades reales de los latinos viviendo y trabajando en Nueva Zelanda.
+              Cada módulo está diseñado para las necesidades reales de los latinos que viven y trabajan en Nueva Zelanda.
             </p>
           </div>
 
@@ -371,7 +366,7 @@ export default function LandingPage() {
               Diseñado para la comunidad
             </h2>
             <p className="text-gray-500 mt-4 max-w-lg mx-auto">
-              Cada detalle fue pensado para hacer la vida más fácil a los latinos que viven, trabajan y se mueven por Nueva Zelanda.
+              Cada detalle fue pensado para hacer la vida más fácil a los hispanohablantes que viven, trabajan y se mueven por el mundo.
             </p>
           </div>
 
@@ -389,17 +384,17 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Cities ──────────────────────────────────────────── */}
+      {/* ── Countries ──────────────────────────────────────── */}
       <section className="bg-white py-16">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-6">
             Activo en toda Nueva Zelanda
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
-            {CITIES.map((city) => (
-              <span key={city} className="inline-flex items-center gap-1.5 bg-primary-light text-primary text-sm font-semibold px-4 py-2 rounded-full">
+            {NZ_REGIONS.map((region) => (
+              <span key={region} className="inline-flex items-center gap-1.5 bg-primary-light text-primary text-sm font-semibold px-4 py-2 rounded-full">
                 <MapPin size={12} />
-                {city}
+                {region}
               </span>
             ))}
           </div>
@@ -418,7 +413,7 @@ export default function LandingPage() {
             <span className="text-green-300">te espera en NZ</span>
           </h2>
           <p className="text-white/70 text-lg mb-10">
-            Únete gratis y conecta con miles de latinoamericanos que ya están usando Kiwi Latino.
+            Únete gratis y conecta con latinos que ya están viviendo y trabajando en Nueva Zelanda.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
@@ -460,11 +455,11 @@ export default function LandingPage() {
             {/* Brand */}
             <div className="max-w-xs">
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-2xl">🥝</span>
-                <span className="font-black text-white text-lg">Kiwi Latino</span>
+                <span className="text-2xl">✈️</span>
+                <span className="font-black text-white text-lg">Belfera</span>
               </div>
               <p className="text-sm leading-relaxed">
-                La plataforma para la comunidad latina en Nueva Zelanda. Gratis, en español, sin intermediarios.
+                La plataforma para latinos en Nueva Zelanda. Gratis, en español, sin intermediarios.
               </p>
             </div>
 
@@ -482,7 +477,7 @@ export default function LandingPage() {
               <div>
                 <p className="text-white font-semibold text-sm mb-4">Módulos</p>
                 <ul className="space-y-2 text-sm">
-                  <li><span>Arriendos</span></li>
+                  <li><span>Alojamiento</span></li>
                   <li><span>Trabajo</span></li>
                   <li><span>Compra y Venta</span></li>
                   <li><span>Viajes Compartidos</span></li>
@@ -492,7 +487,7 @@ export default function LandingPage() {
           </div>
 
           <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
-            <p>© {new Date().getFullYear()} Kiwi Latino · Nueva Zelanda</p>
+            <p>© {new Date().getFullYear()} Belfera · belfera.com</p>
             <div className="flex gap-6">
               <a href="#" className="hover:text-white transition-colors">Privacidad</a>
               <a href="#" className="hover:text-white transition-colors">Términos</a>

@@ -53,8 +53,8 @@ export default function ResetPasswordPage() {
         <div className="absolute -top-28 -right-28 w-96 h-96 rounded-full bg-white/[0.05]" />
         <div className="absolute bottom-1/3 -left-20 w-64 h-64 rounded-full bg-white/[0.05]" />
         <Link to="/landing" className="absolute top-10 left-10 flex items-center gap-2 z-10">
-          <span className="text-2xl">🥝</span>
-          <span className="font-black text-white text-xl">Kiwi Latino</span>
+          <span className="text-2xl">✈️</span>
+          <span className="font-black text-white text-xl">Belfera</span>
         </Link>
         <div className="relative z-10">
           <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center mb-6">
@@ -74,8 +74,8 @@ export default function ResetPasswordPage() {
         <div className="max-w-md mx-auto w-full">
 
           <div className="lg:hidden flex items-center gap-2 mb-10">
-            <span className="text-xl">🥝</span>
-            <span className="font-black text-primary text-lg">Kiwi Latino</span>
+            <span className="text-xl">✈️</span>
+            <span className="font-black text-primary text-lg">Belfera</span>
           </div>
 
           {done ? (

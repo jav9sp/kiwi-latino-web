@@ -198,7 +198,7 @@ export default function EditPostPage() {
         {showPrice && (
           <div>
             <label className="block text-sm font-medium mb-1">
-              {post.module === 'JOBS' ? 'Salario / tarifa (NZD, opcional)' : 'Precio (NZD, opcional)'}
+              {post.module === 'JOBS' ? 'Salario / tarifa (opcional)' : 'Precio (opcional)'}
             </label>
             <input
               type="number" min="0" className="input" value={form.price}

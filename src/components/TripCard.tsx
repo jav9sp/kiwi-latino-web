@@ -56,7 +56,7 @@ export default function TripCard({ trip }: Props) {
         {trip.costPerPerson != null && (
           <div className="flex items-center gap-1 text-sm text-gray-500 ml-auto">
             <DollarSign size={13} />
-            <span>{trip.costPerPerson} NZD</span>
+            <span>{trip.costPerPerson} {trip.currency ?? 'NZD'}</span>
           </div>
         )}
       </div>
