@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom';
 import { Home, Car, Users, MessageCircle, User, LogOut, Building2, Briefcase, Menu, X, LayoutDashboard, Bookmark } from 'lucide-react';
 import Flag from './Flag';
 import { useAuthStore } from '../stores/authStore';
 import { useUnreadCount } from '../hooks/useMessages';
+import WelcomeModal from './WelcomeModal';
 
 const nav = [
   { to: '/feed',        icon: Home,          label: 'Inicio' },
@@ -27,7 +28,21 @@ export default function Layout() {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
   const isAdmin = !!ADMIN_EMAIL && user?.email === ADMIN_EMAIL;
+
+  useEffect(() => {
+    if (!user) return;
+    const key = `belfera_welcome_${user.id}`;
+    if (!localStorage.getItem(key)) {
+      setShowWelcome(true);
+    }
+  }, [user]);
+
+  const handleCloseWelcome = () => {
+    if (user) localStorage.setItem(`belfera_welcome_${user.id}`, '1');
+    setShowWelcome(false);
+  };
 
   const unreadCount = useUnreadCount();
   const handleLogout = () => { logout(); navigate('/login'); };
@@ -161,6 +176,11 @@ export default function Layout() {
       <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
         <Outlet />
       </main>
+
+      {/* ── Welcome modal (first login) ── */}
+      {showWelcome && user && (
+        <WelcomeModal userName={user.name} onClose={handleCloseWelcome} />
+      )}
 
     </div>
   );
