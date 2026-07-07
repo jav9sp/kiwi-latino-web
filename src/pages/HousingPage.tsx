@@ -45,7 +45,7 @@ export default function HousingPage() {
   if (isError) return <div className="p-6"><ErrorState onRetry={refetch} /></div>;
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 pb-24 md:pb-6">
+    <div className="max-w-2xl mx-auto px-4 py-6 pb-20 md:pb-6">
       <div className="flex items-center justify-between mb-5">
         <div>
           <h1 className="text-xl font-bold">Alojamiento</h1>

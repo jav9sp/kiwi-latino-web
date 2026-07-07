@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { Users, FileText, Car, MessageCircle, Heart, TrendingUp, MapPin, Globe } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Users, FileText, Car, MessageCircle, Heart, TrendingUp, MapPin, Globe, Send } from 'lucide-react';
 import api from '../lib/api';
 import { ApiResponse } from '../types';
 import { POST_MODULES, LATAM_COUNTRIES } from '../constants';
@@ -24,6 +25,11 @@ interface AdminStats {
     id: string; name: string; email: string;
     countryOrigin?: string; cityNz?: string; createdAt: string;
   }[];
+}
+
+interface AdminUser {
+  id: string; name: string; email: string;
+  avatarUrl?: string; countryOrigin?: string; cityNz?: string; createdAt: string;
 }
 
 const TRIP_STATUS_LABEL: Record<string, string> = {
@@ -68,10 +74,20 @@ function BarRow({ label, count, max, color }: { label: React.ReactNode; count: n
 }
 
 export default function AdminPage() {
+  const navigate = useNavigate();
+
   const { data: stats, isLoading, isError } = useQuery({
     queryKey: ['admin', 'stats'],
     queryFn: async () => {
       const { data } = await api.get<ApiResponse<AdminStats>>('/admin/stats');
+      return data.data!;
+    },
+  });
+
+  const { data: allUsers = [] } = useQuery({
+    queryKey: ['admin', 'users'],
+    queryFn: async () => {
+      const { data } = await api.get<ApiResponse<AdminUser[]>>('/admin/users');
       return data.data!;
     },
   });
@@ -241,32 +257,52 @@ export default function AdminPage() {
         )}
       </div>
 
-      {/* ── Usuarios recientes ── */}
+      {/* ── Todos los usuarios ── */}
       <section>
-        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Usuarios recientes</h2>
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+          Usuarios ({allUsers.length})
+        </h2>
         <div className="card overflow-hidden">
-          <div className="divide-y divide-gray-100">
-            {stats.recentUsers.map((u) => (
-              <div key={u.id} className="flex items-center gap-3 px-4 py-3">
-                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm font-bold shrink-0">
-                  {u.name[0].toUpperCase()}
-                </div>
+          <div className="divide-y divide-gray-100 dark:divide-gray-800">
+            {allUsers.map((u) => (
+              <div
+                key={u.id}
+                className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer transition-colors"
+                onClick={() => navigate(`/profile/${u.id}`)}
+              >
+                {u.avatarUrl ? (
+                  <img src={u.avatarUrl} alt="" className="w-9 h-9 rounded-full object-cover shrink-0" />
+                ) : (
+                  <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm font-bold shrink-0">
+                    {u.name[0].toUpperCase()}
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{u.name}</p>
                   <p className="text-xs text-gray-400 truncate">{u.email}</p>
                 </div>
-                <div className="text-right shrink-0">
-                  {u.cityNz && (
-                    <p className="text-xs text-gray-500 flex items-center gap-1 justify-end">
-                      <MapPin size={10} /> {u.cityNz}
-                    </p>
-                  )}
-                  {u.countryOrigin && (
-                    <Flag code={u.countryOrigin} size={14} />
-                  )}
+                <div className="flex items-center gap-3 shrink-0">
+                  <div className="text-right hidden sm:block">
+                    {u.cityNz && (
+                      <p className="text-xs text-gray-500 flex items-center gap-1 justify-end">
+                        <MapPin size={10} /> {u.cityNz}
+                      </p>
+                    )}
+                    {u.countryOrigin && <Flag code={u.countryOrigin} size={14} />}
+                  </div>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); navigate(`/chat/${u.id}`); }}
+                    className="p-2 rounded-lg text-gray-400 hover:text-primary hover:bg-primary/10 transition-colors"
+                    title="Enviar mensaje"
+                  >
+                    <Send size={15} />
+                  </button>
                 </div>
               </div>
             ))}
+            {allUsers.length === 0 && (
+              <p className="text-sm text-gray-400 text-center py-6">Sin usuarios registrados</p>
+            )}
           </div>
         </div>
       </section>
