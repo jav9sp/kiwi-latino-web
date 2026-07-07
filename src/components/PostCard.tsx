@@ -15,15 +15,24 @@ export default function PostCard({ post }: Props) {
   const mod = POST_MODULES.find((m) => m.key === post.module);
   const savePost = useSavePost(post.id);
   const saved = post.savedByMe ?? false;
+  const isHousingBusqueda = post.module === 'HOUSING' && post.metadata?.tipo === 'busqueda';
 
   return (
     <article
       onClick={() => navigate(`/posts/${post.id}`)}
       className="card p-4 cursor-pointer hover:shadow-md transition-shadow"
     >
-      {post.images?.[0] && (
+      {post.images?.[0] ? (
         <img src={post.images[0]} alt="" className="w-full h-40 object-cover rounded-lg mb-3" />
-      )}
+      ) : isHousingBusqueda && post.user?.avatarUrl ? (
+        <div className="w-full h-28 bg-blue-50 dark:bg-blue-950/30 rounded-lg mb-3 flex items-center justify-center">
+          <img
+            src={post.user.avatarUrl}
+            alt=""
+            className="w-16 h-16 rounded-full object-cover ring-4 ring-white dark:ring-gray-800"
+          />
+        </div>
+      ) : null}
 
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex items-center gap-2 flex-wrap">
