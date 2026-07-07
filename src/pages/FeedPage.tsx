@@ -1,15 +1,15 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Search } from 'lucide-react';
 import { usePosts } from '../hooks/usePosts';
-import { usePostStore } from '../stores/postStore';
 import PostCard from '../components/PostCard';
 import EmptyState from '../components/EmptyState';
 import ErrorState from '../components/ErrorState';
-import { POST_MODULES, NZ_CITIES } from '../constants';
+import CityFilter from '../components/CityFilter';
 
 export default function FeedPage() {
-  const { filters, setFilters, resetFilters } = usePostStore();
+  const [city, setCity] = useState('');
+  const filters = { city: city || undefined };
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, refetch } = usePosts(filters);
   const navigate = useNavigate();
   const observer = useRef<IntersectionObserver | null>(null);
@@ -39,44 +39,14 @@ export default function FeedPage() {
         </button>
       </div>
 
-      {/* Filters */}
-      <div className="card p-3 mb-5 space-y-2">
-        <div className="flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
-          <button
-            onClick={resetFilters}
-            className={`btn shrink-0 text-xs ${!filters.module ? 'btn-primary' : 'btn-outline'}`}
-          >
-            Todos
-          </button>
-          {POST_MODULES.map((m) => (
-            <button
-              key={m.key}
-              onClick={() => setFilters({ ...filters, module: filters.module === m.key ? undefined : m.key })}
-              className={`btn shrink-0 text-xs ${filters.module === m.key ? 'text-white' : 'btn-outline'}`}
-              style={filters.module === m.key ? { backgroundColor: m.color, borderColor: m.color } : {}}
-            >
-              {m.label}
-            </button>
-          ))}
-        </div>
-        <div className="flex gap-2">
-          <select
-            value={filters.city ?? ''}
-            onChange={(e) => setFilters({ ...filters, city: e.target.value || undefined })}
-            className="input text-sm py-1.5 flex-1"
-          >
-            <option value="">Todas las ciudades</option>
-            {NZ_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
-        </div>
-      </div>
+      <CityFilter value={city} onChange={setCity} />
 
       {isLoading ? (
         <div className="flex justify-center py-16">
           <div className="animate-spin w-8 h-8 rounded-full border-4 border-primary border-t-transparent" />
         </div>
       ) : posts.length === 0 ? (
-        <EmptyState icon={Search} title="Sin publicaciones" subtitle="No hay publicaciones con estos filtros." actionLabel="Limpiar filtros" onAction={resetFilters} />
+        <EmptyState icon={Search} title="Sin publicaciones" subtitle="No hay publicaciones con estos filtros." actionLabel="Limpiar filtros" onAction={() => setCity('')} />
       ) : (
         <div className="space-y-4">
           {posts.map((p, i) => {

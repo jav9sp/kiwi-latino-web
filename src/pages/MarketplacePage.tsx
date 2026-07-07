@@ -1,6 +1,6 @@
 import { useRef, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Building2, Plus } from 'lucide-react';
+import { ShoppingBag, Plus } from 'lucide-react';
 import { usePosts } from '../hooks/usePosts';
 import PostCard from '../components/PostCard';
 import EmptyState from '../components/EmptyState';
@@ -8,10 +8,10 @@ import ErrorState from '../components/ErrorState';
 import CityFilter from '../components/CityFilter';
 import { PostModuleKey } from '../constants';
 
-export default function HousingPage() {
+export default function MarketplacePage() {
   const navigate = useNavigate();
   const [city, setCity] = useState('');
-  const filters = { module: 'HOUSING' as PostModuleKey, city: city || undefined };
+  const filters = { module: 'MARKETPLACE' as PostModuleKey, city: city || undefined };
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, refetch } = usePosts(filters);
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -35,8 +35,8 @@ export default function HousingPage() {
     <div className="max-w-2xl mx-auto px-4 py-6 pb-24 md:pb-6">
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h1 className="text-xl font-bold">Alojamiento</h1>
-          <p className="text-sm text-gray-500">Habitaciones, casas, camping, carpark y más</p>
+          <h1 className="text-xl font-bold">Marketplace</h1>
+          <p className="text-sm text-gray-500">Artículos de segunda mano, electrónica, muebles y más</p>
         </div>
         <button onClick={() => navigate('/posts/new')} className="btn-primary">
           <Plus size={16} /> Publicar
@@ -51,9 +51,9 @@ export default function HousingPage() {
         </div>
       ) : posts.length === 0 ? (
         <EmptyState
-          icon={Building2}
+          icon={ShoppingBag}
           title="Sin publicaciones"
-          subtitle="Aún no hay publicaciones de alojamiento."
+          subtitle="Aún no hay artículos en el marketplace."
         />
       ) : (
         <div className="space-y-4">

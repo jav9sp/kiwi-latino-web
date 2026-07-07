@@ -1,15 +1,17 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Users } from 'lucide-react';
 import { usePosts } from '../hooks/usePosts';
 import PostCard from '../components/PostCard';
 import EmptyState from '../components/EmptyState';
 import ErrorState from '../components/ErrorState';
+import CityFilter from '../components/CityFilter';
 import { PostModuleKey } from '../constants';
 
 export default function CommunityPage() {
   const navigate = useNavigate();
-  const filters = { module: 'COMMUNITY' as PostModuleKey };
+  const [city, setCity] = useState('');
+  const filters = { module: 'COMMUNITY' as PostModuleKey, city: city || undefined };
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, refetch } = usePosts(filters);
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -37,6 +39,8 @@ export default function CommunityPage() {
           <Plus size={16} /> Publicar
         </button>
       </div>
+
+      <CityFilter value={city} onChange={setCity} />
 
       {isLoading ? (
         <div className="flex justify-center py-16">
