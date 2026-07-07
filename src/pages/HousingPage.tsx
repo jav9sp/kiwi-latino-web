@@ -8,10 +8,23 @@ import ErrorState from '../components/ErrorState';
 import CityFilter from '../components/CityFilter';
 import { PostModuleKey } from '../constants';
 
+type HousingTipo = '' | 'busqueda' | 'oferta';
+
+const TIPO_TABS: { label: string; value: HousingTipo }[] = [
+  { label: 'Todos', value: '' },
+  { label: 'Ofrecen', value: 'oferta' },
+  { label: 'Buscan', value: 'busqueda' },
+];
+
 export default function HousingPage() {
   const navigate = useNavigate();
   const [city, setCity] = useState('');
-  const filters = { module: 'HOUSING' as PostModuleKey, city: city || undefined };
+  const [housingTipo, setHousingTipo] = useState<HousingTipo>('');
+  const filters = {
+    module: 'HOUSING' as PostModuleKey,
+    city: city || undefined,
+    housingTipo: housingTipo || undefined,
+  };
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, refetch } = usePosts(filters);
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -41,6 +54,22 @@ export default function HousingPage() {
         <button onClick={() => navigate('/posts/new')} className="btn-primary">
           <Plus size={16} /> Publicar
         </button>
+      </div>
+
+      <div className="flex gap-2 mb-4">
+        {TIPO_TABS.map((tab) => (
+          <button
+            key={tab.value}
+            onClick={() => setHousingTipo(tab.value)}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              housingTipo === tab.value
+                ? 'bg-primary text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       <CityFilter value={city} onChange={setCity} />

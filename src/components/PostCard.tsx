@@ -1,8 +1,8 @@
-import { Heart, MessageCircle, MapPin, Bookmark } from 'lucide-react';
+import { Heart, MessageCircle, MapPin, Bookmark, Search, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Post } from '../types';
 import { POST_MODULES } from '../constants';
-import { formatDistanceToNow } from '../utils/date';
+import { formatDistanceToNow, formatDate } from '../utils/date';
 import UserLink from './UserLink';
 import { useSavePost } from '../hooks/usePosts';
 
@@ -32,6 +32,16 @@ export default function PostCard({ post }: Props) {
               {mod.label}
             </span>
           )}
+          {post.module === 'HOUSING' && post.metadata?.tipo === 'busqueda' && (
+            <span className="badge bg-blue-50 text-blue-600 text-xs flex items-center gap-1">
+              <Search size={10} /> Busca
+            </span>
+          )}
+          {post.module === 'HOUSING' && post.metadata?.tipo === 'oferta' && (
+            <span className="badge bg-emerald-50 text-emerald-700 text-xs flex items-center gap-1">
+              <Home size={10} /> Ofrece
+            </span>
+          )}
           {post.price != null && (
             <span className="badge bg-gray-100 text-gray-700">${post.price} {post.currency ?? 'NZD'}</span>
           )}
@@ -44,6 +54,21 @@ export default function PostCard({ post }: Props) {
 
       <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2">{post.title}</h3>
       <p className="text-sm text-gray-500 line-clamp-2 mb-3">{post.description}</p>
+
+      {post.module === 'HOUSING' && post.metadata?.tipo === 'oferta' && (
+        <div className="flex flex-wrap gap-1.5 mb-3">
+          {post.metadata.bills === 'incluidas' && (
+            <span className="text-xs bg-green-50 text-green-700 border border-green-200 rounded-full px-2.5 py-0.5 font-medium">
+              Bills incluidas
+            </span>
+          )}
+          {post.metadata.disponibleDesde && (
+            <span className="text-xs bg-gray-50 text-gray-500 border border-gray-200 rounded-full px-2.5 py-0.5">
+              Desde {formatDate(post.metadata.disponibleDesde as string)}
+            </span>
+          )}
+        </div>
+      )}
 
       <div className="flex items-center justify-between text-xs text-gray-400">
         <div className="flex items-center gap-3">

@@ -40,6 +40,122 @@ export const NZ_CITIES = [
 
 export type NZCity = (typeof NZ_CITIES)[number];
 
+// ─── Estructura completa de regiones, ciudades y pueblos ─────────────────────
+// Para uso futuro en filtros más granulares, perfiles de usuario, etc.
+
+export const NZ_REGIONS = [
+  {
+    region: 'Northland',
+    cities: [
+      'Whangarei', 'Kerikeri', 'Kaitaia', 'Paihia', 'Russell',
+      'Dargaville', 'Mangawhai', 'Hikurangi',
+    ],
+  },
+  {
+    region: 'Auckland',
+    cities: [
+      'Auckland', 'Manukau', 'North Shore', 'Henderson', 'Waitakere',
+      'Papakura', 'Pukekohe', 'Takapuna', 'Botany', 'Manurewa',
+      'Papatoetoe', 'Onehunga', 'Mt Eden', 'Ponsonby', 'Orewa',
+      'Silverdale', 'Warkworth', 'Helensville', 'Beachlands',
+    ],
+  },
+  {
+    region: 'Waikato',
+    cities: [
+      'Hamilton', 'Cambridge', 'Te Awamutu', 'Huntly', 'Ngaruawahia',
+      'Tokoroa', 'Thames', 'Paeroa', 'Matamata', 'Morrinsville',
+      'Whangamatā', 'Tairua', 'Raglan', 'Otorohanga',
+    ],
+  },
+  {
+    region: 'Bay of Plenty',
+    cities: [
+      'Tauranga', 'Mount Maunganui', 'Rotorua', 'Whakatāne',
+      'Te Puke', 'Katikati', 'Ōpōtiki', 'Taupō', 'Tokoroa',
+    ],
+  },
+  {
+    region: 'Gisborne',
+    cities: ['Gisborne', 'Tolaga Bay', 'Ruatoria'],
+  },
+  {
+    region: "Hawke's Bay",
+    cities: [
+      'Napier', 'Hastings', 'Havelock North', 'Waipawa',
+      'Waipukurau', 'Wairoa',
+    ],
+  },
+  {
+    region: 'Taranaki',
+    cities: ['New Plymouth', 'Stratford', 'Hāwera', 'Eltham', 'Inglewood'],
+  },
+  {
+    region: 'Manawatū-Whanganui',
+    cities: [
+      'Palmerston North', 'Whanganui', 'Feilding', 'Levin',
+      'Foxton', 'Dannevirke', 'Woodville', 'Marton',
+    ],
+  },
+  {
+    region: 'Wellington',
+    cities: [
+      'Wellington', 'Lower Hutt', 'Upper Hutt', 'Porirua',
+      'Paraparaumu', 'Waikanae', 'Masterton', 'Carterton',
+    ],
+  },
+  {
+    region: 'Tasman',
+    cities: ['Richmond', 'Motueka', 'Takaka', 'Murchison'],
+  },
+  {
+    region: 'Nelson',
+    cities: ['Nelson'],
+  },
+  {
+    region: 'Marlborough',
+    cities: ['Blenheim', 'Picton', 'Havelock', 'Kaikōura', 'Renwick'],
+  },
+  {
+    region: 'West Coast',
+    cities: [
+      'Greymouth', 'Westport', 'Hokitika', 'Reefton',
+      'Franz Josef', 'Fox Glacier',
+    ],
+  },
+  {
+    region: 'Canterbury',
+    cities: [
+      'Christchurch', 'Rangiora', 'Rolleston', 'Ashburton',
+      'Timaru', 'Hanmer Springs', 'Methven', 'Darfield',
+      'Lincoln', 'Leeston', 'Geraldine', 'Temuka',
+    ],
+  },
+  {
+    region: 'Otago',
+    cities: [
+      'Dunedin', 'Queenstown', 'Wānaka', 'Alexandra',
+      'Cromwell', 'Oamaru', 'Balclutha', 'Milton',
+      'Clyde', 'Arrowtown',
+    ],
+  },
+  {
+    region: 'Southland',
+    cities: [
+      'Invercargill', 'Gore', 'Te Anau', 'Bluff',
+      'Riverton', 'Winton', 'Lumsden',
+    ],
+  },
+] as const;
+
+export type NZRegion = (typeof NZ_REGIONS)[number]['region'];
+export type NZLocationEntry = (typeof NZ_REGIONS)[number];
+
+/** Todas las ciudades y pueblos de NZ en lista plana, ordenadas alfabéticamente */
+export const NZ_ALL_CITIES = NZ_REGIONS
+  .flatMap((r) => r.cities)
+  .sort((a, b) => a.localeCompare(b, 'es')) as string[];
+
 export const POST_MODULES = [
   { key: 'HOUSING',     label: 'Alojamiento', color: '#4CAF50' },
   { key: 'JOBS',        label: 'Empleos',     color: '#2196F3' },
