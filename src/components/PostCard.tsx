@@ -71,7 +71,7 @@ export default function PostCard({ post }: Props) {
               Bills incluidas
             </span>
           )}
-          {post.metadata.disponibleDesde && (
+          {!!post.metadata.disponibleDesde && (
             <span className="text-xs bg-gray-50 text-gray-500 border border-gray-200 rounded-full px-2.5 py-0.5">
               Desde {formatDate(post.metadata.disponibleDesde as string)}
             </span>
