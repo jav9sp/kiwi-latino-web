@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, User, LogOut, Edit2, Check, X, MapPin, MessageCircle, Camera, ChevronRight, Calendar, Users, DollarSign, Lock, Eye, EyeOff, KeyRound } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '../stores/authStore';
+import OnboardingChecklist from '../components/OnboardingChecklist';
 import { NZ_CITIES, POST_MODULES, LATAM_COUNTRIES, getFlagEmoji } from '../constants';
 import Flag from '../components/Flag';
 import api from '../lib/api';
@@ -267,6 +268,8 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {isOwn && <OnboardingChecklist />}
 
       {(posts.length > 0 || isOwn) && (
         <div className="mb-4">
