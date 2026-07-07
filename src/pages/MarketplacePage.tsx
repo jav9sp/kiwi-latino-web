@@ -38,7 +38,7 @@ export default function MarketplacePage() {
           <h1 className="text-xl font-bold">Marketplace</h1>
           <p className="text-sm text-gray-500">Artículos de segunda mano, electrónica, muebles y más</p>
         </div>
-        <button onClick={() => navigate('/posts/new')} className="btn-primary">
+        <button onClick={() => navigate('/posts/new?module=MARKETPLACE')} className="btn-primary">
           <Plus size={16} /> Publicar
         </button>
       </div>

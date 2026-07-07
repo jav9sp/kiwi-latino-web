@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Building2, Briefcase, ShoppingBag, Car, Users, ChevronRight, Search, Home } from 'lucide-react';
 import { useCreatePost } from '../hooks/usePosts';
 import { useAuthStore } from '../stores/authStore';
@@ -16,10 +16,12 @@ const MODULE_ICONS: Record<string, React.ComponentType<{ size?: number; style?: 
 
 export default function CreatePostPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuthStore();
   const createPost = useCreatePost();
 
-  const [module, setModule] = useState<PostModuleKey | null>(null);
+  const preselectedModule = searchParams.get('module') as PostModuleKey | null;
+  const [module, setModule] = useState<PostModuleKey | null>(preselectedModule);
   const [images, setImages] = useState<string[]>([]);
   const [error, setError] = useState('');
   type HousingIntention = 'busqueda' | 'oferta' | '';
@@ -49,6 +51,8 @@ export default function CreatePostPage() {
     if (module === 'HOUSING' && form.housingIntention) {
       setForm((f) => ({ ...f, housingIntention: '' }));
       setError('');
+    } else if (preselectedModule) {
+      navigate(-1);
     } else {
       setModule(null);
       setError('');
@@ -171,7 +175,7 @@ export default function CreatePostPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-6 pb-20 md:pb-6">
         <div className="flex items-center gap-3 mb-8">
-          <button onClick={() => { setModule(null); setError(''); }} className="btn-ghost p-2 -ml-2">
+          <button onClick={handleBack} className="btn-ghost p-2 -ml-2">
             <ArrowLeft size={18} />
           </button>
           <div>

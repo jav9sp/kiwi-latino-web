@@ -38,7 +38,7 @@ export default function JobsPage() {
           <h1 className="text-xl font-bold">Empleos</h1>
           <p className="text-sm text-gray-500">Farm, hostelería, construcción y más</p>
         </div>
-        <button onClick={() => navigate('/posts/new')} className="btn-primary">
+        <button onClick={() => navigate('/posts/new?module=JOBS')} className="btn-primary">
           <Plus size={16} /> Publicar
         </button>
       </div>

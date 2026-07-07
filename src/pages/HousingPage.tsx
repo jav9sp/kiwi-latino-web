@@ -51,7 +51,7 @@ export default function HousingPage() {
           <h1 className="text-xl font-bold">Alojamiento</h1>
           <p className="text-sm text-gray-500">Habitaciones, casas, camping, carpark y más</p>
         </div>
-        <button onClick={() => navigate('/posts/new')} className="btn-primary">
+        <button onClick={() => navigate('/posts/new?module=HOUSING')} className="btn-primary">
           <Plus size={16} /> Publicar
         </button>
       </div>

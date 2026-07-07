@@ -34,8 +34,11 @@ export default function CommunityPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 pb-20 md:pb-6">
       <div className="flex items-center justify-between mb-5">
-        <h1 className="text-xl font-bold">Comunidad</h1>
-        <button onClick={() => navigate('/posts/new')} className="btn-primary">
+        <div>
+          <h1 className="text-xl font-bold">Comunidad</h1>
+          <p className="text-sm text-gray-500">Comparte información, lugares o tus experiencias</p>
+        </div>
+        <button onClick={() => navigate('/posts/new?module=COMMUNITY')} className="btn-primary">
           <Plus size={16} /> Publicar
         </button>
       </div>
@@ -47,7 +50,7 @@ export default function CommunityPage() {
           <div className="animate-spin w-8 h-8 rounded-full border-4 border-primary border-t-transparent" />
         </div>
       ) : posts.length === 0 ? (
-        <EmptyState icon={Users} title="Sin publicaciones" subtitle="Sé el primero en publicar en tu comunidad." actionLabel="Crear publicación" onAction={() => navigate('/posts/new')} />
+        <EmptyState icon={Users} title="Sin publicaciones" subtitle="Sé el primero en publicar en tu comunidad." actionLabel="Crear publicación" onAction={() => navigate('/posts/new?module=COMMUNITY')} />
       ) : (
         <div className="space-y-4">
           {posts.map((p, i) => {
