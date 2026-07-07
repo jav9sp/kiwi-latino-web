@@ -5,6 +5,7 @@ import api from '../lib/api';
 import { ApiResponse } from '../types';
 import { POST_MODULES, LATAM_COUNTRIES } from '../constants';
 import Flag from '../components/Flag';
+import { formatDistanceToNow } from '../utils/date';
 
 interface AdminStats {
   users: {
@@ -29,7 +30,8 @@ interface AdminStats {
 
 interface AdminUser {
   id: string; name: string; email: string;
-  avatarUrl?: string; countryOrigin?: string; cityNz?: string; createdAt: string;
+  avatarUrl?: string; countryOrigin?: string; cityNz?: string;
+  createdAt: string; lastSeenAt?: string;
 }
 
 const TRIP_STATUS_LABEL: Record<string, string> = {
@@ -280,6 +282,9 @@ export default function AdminPage() {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{u.name}</p>
                   <p className="text-xs text-gray-400 truncate">{u.email}</p>
+                  <p className="text-xs text-gray-300 dark:text-gray-600 mt-0.5">
+                    {u.lastSeenAt ? `Visto ${formatDistanceToNow(u.lastSeenAt)}` : 'Sin actividad'}
+                  </p>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
                   <div className="text-right hidden sm:block">
