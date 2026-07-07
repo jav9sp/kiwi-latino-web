@@ -8,7 +8,7 @@ async function fetchPosts(filters: PostFilters, page: number): Promise<Paginated
   if (filters.city) params.city = filters.city;
   if (filters.minPrice != null) params.minPrice = filters.minPrice;
   if (filters.maxPrice != null) params.maxPrice = filters.maxPrice;
-  if (filters.tipoAlojamiento) params.tipoAlojamiento = filters.tipoAlojamiento;
+  if (filters.housingTipo) params.housingTipo = filters.housingTipo;
   if (filters.disponibleDesde) params.disponibleDesde = filters.disponibleDesde;
   if (filters.tipoTrabajo) params.tipoTrabajo = filters.tipoTrabajo;
   if (filters.categoria) params.categoria = filters.categoria;

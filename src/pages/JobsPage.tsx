@@ -1,15 +1,17 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Briefcase, Plus } from 'lucide-react';
 import { usePosts } from '../hooks/usePosts';
 import PostCard from '../components/PostCard';
 import EmptyState from '../components/EmptyState';
 import ErrorState from '../components/ErrorState';
+import CityFilter from '../components/CityFilter';
 import { PostModuleKey } from '../constants';
 
 export default function JobsPage() {
   const navigate = useNavigate();
-  const filters = { module: 'JOBS' as PostModuleKey };
+  const [city, setCity] = useState('');
+  const filters = { module: 'JOBS' as PostModuleKey, city: city || undefined };
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, refetch } = usePosts(filters);
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -36,10 +38,12 @@ export default function JobsPage() {
           <h1 className="text-xl font-bold">Empleos</h1>
           <p className="text-sm text-gray-500">Farm, hostelería, construcción y más</p>
         </div>
-        <button onClick={() => navigate('/posts/new')} className="btn-primary">
+        <button onClick={() => navigate('/posts/new?module=JOBS')} className="btn-primary">
           <Plus size={16} /> Publicar
         </button>
       </div>
+
+      <CityFilter value={city} onChange={setCity} />
 
       {isLoading ? (
         <div className="flex justify-center py-16">

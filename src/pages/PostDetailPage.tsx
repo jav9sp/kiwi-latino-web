@@ -54,7 +54,17 @@ export default function PostDetailPage() {
       </button>
 
       <div className="card overflow-hidden mb-4">
-        {post.images && post.images.length > 0 && <ImageSlider images={post.images} />}
+        {post.images && post.images.length > 0 ? (
+          <ImageSlider images={post.images} />
+        ) : post.module === 'HOUSING' && post.metadata?.tipo === 'busqueda' && post.user?.avatarUrl ? (
+          <div className="w-full h-48 bg-blue-50 dark:bg-blue-950/30 flex items-center justify-center">
+            <img
+              src={post.user.avatarUrl}
+              alt=""
+              className="w-24 h-24 rounded-full object-cover ring-4 ring-white dark:ring-gray-800"
+            />
+          </div>
+        ) : null}
         <div className="p-5">
           <div className="flex items-center gap-2 mb-3 flex-wrap">
             {mod && <span className="badge text-white text-xs" style={{ backgroundColor: mod.color }}>{mod.label}</span>}

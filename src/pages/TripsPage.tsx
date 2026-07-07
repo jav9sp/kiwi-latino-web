@@ -32,7 +32,10 @@ export default function TripsPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 pb-20 md:pb-6">
       <div className="flex items-center justify-between mb-5">
-        <h1 className="text-xl font-bold">Viajes compartidos</h1>
+        <div>
+          <h1 className="text-xl font-bold">Viajes compartidos</h1>
+          <p className="text-sm text-gray-500">Ofrece o encuentra aventones y viajes compartidos</p>
+        </div>
         <button onClick={() => navigate('/trips/new')} className="btn-primary">
           <Plus size={16} /> Ofrecer
         </button>

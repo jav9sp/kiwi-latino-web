@@ -38,7 +38,7 @@ export interface Post {
 export interface PostFilters {
   module?: PostModuleKey; city?: string;
   minPrice?: number; maxPrice?: number;
-  tipoAlojamiento?: string; disponibleDesde?: string;
+  housingTipo?: 'busqueda' | 'oferta'; disponibleDesde?: string;
   tipoTrabajo?: string; categoria?: string; condicion?: string;
 }
 

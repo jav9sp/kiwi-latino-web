@@ -17,10 +17,12 @@ export default function ImageUploader({ images, onChange, max = 4 }: Props) {
     const remaining = max - images.length;
     const toUpload = Array.from(files).slice(0, remaining);
 
+    const urls: string[] = [];
     for (const file of toUpload) {
       const url = await upload(file);
-      if (url) onChange([...images, url]);
+      if (url) urls.push(url);
     }
+    if (urls.length > 0) onChange([...images, ...urls]);
   };
 
   const remove = (index: number) => {

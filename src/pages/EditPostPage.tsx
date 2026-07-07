@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Search, Home } from 'lucide-react';
 import { usePost, useUpdatePost } from '../hooks/usePosts';
 import { useAuthStore } from '../stores/authStore';
 import { POST_MODULES, NZ_CITIES } from '../constants';
@@ -18,7 +18,12 @@ export default function EditPostPage() {
   const [initialized, setInitialized] = useState(false);
   const [form, setForm] = useState({
     title: '', description: '', city: '', price: '',
-    housingTipo: '', disponibleDesde: '',
+    housingIntention: '' as 'busqueda' | 'oferta' | '',
+    housingBills: '',
+    housingBano: '',
+    housingEstacionamiento: '',
+    housingHabitacion: '',
+    disponibleDesde: '',
     jobsTipo: '',
     categoria: '', condicion: '',
   });
@@ -27,15 +32,19 @@ export default function EditPostPage() {
     if (post && !initialized) {
       const meta = post.metadata ?? {};
       setForm({
-        title:          post.title,
-        description:    post.description,
-        city:           post.city,
-        price:          post.price?.toString() ?? '',
-        housingTipo:    (meta.tipo as string) ?? '',
-        disponibleDesde:(meta.disponibleDesde as string) ?? '',
-        jobsTipo:       (meta.tipo as string) ?? '',
-        categoria:      (meta.categoria as string) ?? '',
-        condicion:      (meta.condicion as string) ?? '',
+        title:                post.title,
+        description:          post.description,
+        city:                 post.city,
+        price:                post.price?.toString() ?? '',
+        housingIntention:     (meta.tipo as 'busqueda' | 'oferta') ?? '',
+        housingBills:         (meta.bills as string) ?? '',
+        housingBano:          (meta.bano as string) ?? '',
+        housingEstacionamiento: meta.estacionamiento === true ? 'si' : meta.estacionamiento === false ? 'no' : '',
+        housingHabitacion:    (meta.habitacion as string) ?? '',
+        disponibleDesde:      (meta.disponibleDesde as string) ?? '',
+        jobsTipo:             (meta.tipo as string) ?? '',
+        categoria:            (meta.categoria as string) ?? '',
+        condicion:            (meta.condicion as string) ?? '',
       });
       setImages(post.images ?? []);
       setInitialized(true);
@@ -54,14 +63,14 @@ export default function EditPostPage() {
     );
   }
 
-  // Solo el dueño puede editar
   if (post.user?.id !== user?.id) {
     navigate(-1);
     return null;
   }
 
   const mod = POST_MODULES.find((m) => m.key === post.module);
-  const showImages = post.module !== 'JOBS';
+  const isHousingBusqueda = post.module === 'HOUSING' && form.housingIntention === 'busqueda';
+  const showImages = post.module !== 'JOBS' && !isHousingBusqueda;
   const showPrice  = post.module === 'HOUSING' || post.module === 'MARKETPLACE' || post.module === 'JOBS';
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,9 +78,17 @@ export default function EditPostPage() {
     setError('');
 
     const metadata: Record<string, unknown> = { ...post.metadata };
+
     if (post.module === 'HOUSING') {
-      if (form.housingTipo) metadata.tipo = form.housingTipo;
-      if (form.disponibleDesde) metadata.disponibleDesde = form.disponibleDesde;
+      metadata.tipo = form.housingIntention;
+      if (form.housingIntention === 'oferta') {
+        if (form.housingBills) metadata.bills = form.housingBills;
+        if (form.housingBano) metadata.bano = form.housingBano;
+        if (form.housingEstacionamiento) metadata.estacionamiento = form.housingEstacionamiento === 'si';
+        if (form.housingHabitacion) metadata.habitacion = form.housingHabitacion;
+        if (form.disponibleDesde) metadata.disponibleDesde = form.disponibleDesde;
+        else delete metadata.disponibleDesde;
+      }
     }
     if (post.module === 'JOBS' && form.jobsTipo) metadata.tipo = form.jobsTipo;
     if (post.module === 'MARKETPLACE') {
@@ -112,6 +129,22 @@ export default function EditPostPage() {
       <form onSubmit={handleSubmit} className="card p-5 space-y-4">
         {error && <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">{error}</p>}
 
+        {/* Badge de intención (solo housing, no editable) */}
+        {post.module === 'HOUSING' && form.housingIntention && (
+          <div className="flex items-center gap-3 rounded-xl bg-gray-50 border border-gray-200 px-4 py-3">
+            {form.housingIntention === 'busqueda'
+              ? <Search size={16} className="text-blue-500 shrink-0" />
+              : <Home size={16} className="text-emerald-600 shrink-0" />
+            }
+            <div>
+              <p className="text-xs text-gray-400">Tipo de publicación</p>
+              <p className="text-sm font-medium">
+                {form.housingIntention === 'busqueda' ? 'Busqueda de arriendo' : 'Oferta de arriendo'}
+              </p>
+            </div>
+          </div>
+        )}
+
         <div>
           <label className="block text-sm font-medium mb-1">Ciudad</label>
           <select className="input" value={form.city} onChange={set('city')} required>
@@ -133,23 +166,48 @@ export default function EditPostPage() {
           />
         </div>
 
-        {post.module === 'HOUSING' && (
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-medium mb-1">Tipo</label>
-              <select className="input" value={form.housingTipo} onChange={set('housingTipo')}>
-                <option value="">Cualquiera</option>
-                <option value="pieza">Pieza</option>
-                <option value="casa">Casa</option>
-                <option value="carpa">Carpa</option>
-                <option value="cabaña">Cabaña</option>
-              </select>
+        {/* Campos housing oferta */}
+        {post.module === 'HOUSING' && form.housingIntention === 'oferta' && (
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium mb-1">Bills</label>
+                <select className="input" value={form.housingBills} onChange={set('housingBills')}>
+                  <option value="">Seleccionar</option>
+                  <option value="incluidas">Incluidas en el precio</option>
+                  <option value="no incluidas">No incluidas</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Baño</label>
+                <select className="input" value={form.housingBano} onChange={set('housingBano')}>
+                  <option value="">Seleccionar</option>
+                  <option value="independiente">Independiente</option>
+                  <option value="compartido">Compartido</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Habitación</label>
+                <select className="input" value={form.housingHabitacion} onChange={set('housingHabitacion')}>
+                  <option value="">Seleccionar</option>
+                  <option value="single">Single (solo tú)</option>
+                  <option value="compartida">Compartida</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Estacionamiento</label>
+                <select className="input" value={form.housingEstacionamiento} onChange={set('housingEstacionamiento')}>
+                  <option value="">Seleccionar</option>
+                  <option value="si">Disponible</option>
+                  <option value="no">No disponible</option>
+                </select>
+              </div>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Disponible desde</label>
+              <label className="block text-sm font-medium mb-1">Disponible desde (opcional)</label>
               <input type="date" className="input" value={form.disponibleDesde} onChange={set('disponibleDesde')} />
             </div>
-          </div>
+          </>
         )}
 
         {post.module === 'JOBS' && (
@@ -198,7 +256,10 @@ export default function EditPostPage() {
         {showPrice && (
           <div>
             <label className="block text-sm font-medium mb-1">
-              {post.module === 'JOBS' ? 'Salario / tarifa (opcional)' : 'Precio (opcional)'}
+              {post.module === 'JOBS' ? 'Salario / tarifa (opcional)' :
+               isHousingBusqueda ? 'Presupuesto máximo / semana (opcional)' :
+               post.module === 'HOUSING' ? 'Precio / semana (opcional)' :
+               'Precio (opcional)'}
             </label>
             <input
               type="number" min="0" className="input" value={form.price}

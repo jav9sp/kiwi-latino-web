@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Building2, Briefcase, ShoppingBag, Car, Users, ChevronRight } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { ArrowLeft, Building2, Briefcase, ShoppingBag, Car, Users, ChevronRight, Search, Home } from 'lucide-react';
 import { useCreatePost } from '../hooks/usePosts';
 import { useAuthStore } from '../stores/authStore';
 import { POST_MODULES, NZ_CITIES, PostModuleKey } from '../constants';
@@ -16,15 +16,23 @@ const MODULE_ICONS: Record<string, React.ComponentType<{ size?: number; style?: 
 
 export default function CreatePostPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuthStore();
   const createPost = useCreatePost();
 
-  const [module, setModule] = useState<PostModuleKey | null>(null);
+  const preselectedModule = searchParams.get('module') as PostModuleKey | null;
+  const [module, setModule] = useState<PostModuleKey | null>(preselectedModule);
   const [images, setImages] = useState<string[]>([]);
   const [error, setError] = useState('');
+  type HousingIntention = 'busqueda' | 'oferta' | '';
   const [form, setForm] = useState({
     title: '', description: '', city: user?.cityNz ?? '', price: '',
-    housingTipo: '', disponibleDesde: '',
+    housingIntention: '' as HousingIntention,
+    housingBills: '',
+    housingBano: '',
+    housingEstacionamiento: '',
+    housingHabitacion: '',
+    disponibleDesde: '',
     jobsTipo: '',
     categoria: '', condicion: '',
   });
@@ -39,16 +47,37 @@ export default function CreatePostPage() {
     setError('');
   };
 
-  const handleBack = () => { setModule(null); setError(''); };
+  const handleBack = () => {
+    if (module === 'HOUSING' && form.housingIntention) {
+      setForm((f) => ({ ...f, housingIntention: '' }));
+      setError('');
+    } else if (preselectedModule) {
+      navigate(-1);
+    } else {
+      setModule(null);
+      setError('');
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!module) return;
 
+    if (module === 'HOUSING' && !form.housingIntention) {
+      setError('Selecciona si buscas o ofreces arriendo.');
+      return;
+    }
+
     const metadata: Record<string, unknown> = {};
     if (module === 'HOUSING') {
-      if (form.housingTipo) metadata.tipo = form.housingTipo;
-      if (form.disponibleDesde) metadata.disponibleDesde = form.disponibleDesde;
+      metadata.tipo = form.housingIntention;
+      if (form.housingIntention === 'oferta') {
+        if (form.housingBills) metadata.bills = form.housingBills;
+        if (form.housingBano) metadata.bano = form.housingBano;
+        if (form.housingEstacionamiento) metadata.estacionamiento = form.housingEstacionamiento === 'si';
+        if (form.housingHabitacion) metadata.habitacion = form.housingHabitacion;
+        if (form.disponibleDesde) metadata.disponibleDesde = form.disponibleDesde;
+      }
     }
     if (module === 'JOBS' && form.jobsTipo) metadata.tipo = form.jobsTipo;
     if (module === 'MARKETPLACE') {
@@ -76,17 +105,25 @@ export default function CreatePostPage() {
   };
 
   const mod = module ? POST_MODULES.find((m) => m.key === module) : null;
-  const showImages = module !== 'JOBS';
+  const showImages = module !== 'JOBS' && !(module === 'HOUSING' && form.housingIntention === 'busqueda');
   const showPrice  = module === 'HOUSING' || module === 'MARKETPLACE' || module === 'JOBS';
 
+  const housingTitlePlaceholder =
+    form.housingIntention === 'busqueda' ? 'Ej: Busco habitación en Auckland' :
+    form.housingIntention === 'oferta'   ? 'Ej: Habitación disponible en Auckland Central' :
+    'Ej: Habitación disponible en Auckland';
+  const housingDescPlaceholder =
+    form.housingIntention === 'busqueda' ? 'Describe lo que buscas, presupuesto, preferencias...' :
+    'Describe el alojamiento, servicios incluidos, normas de convivencia...';
+
   const titlePlaceholder: Record<string, string> = {
-    HOUSING:     'Ej: Pieza disponible en Auckland',
+    HOUSING:     housingTitlePlaceholder,
     JOBS:        'Ej: Se busca trabajador para farm',
     MARKETPLACE: 'Ej: iPhone 12 en buen estado',
     COMMUNITY:   'Ej: Reunión de latinos en Wellington',
   };
   const descPlaceholder: Record<string, string> = {
-    HOUSING:     'Describe el alojamiento, ubicación, servicios incluidos...',
+    HOUSING:     housingDescPlaceholder,
     JOBS:        'Describe el trabajo, requisitos, horarios...',
     MARKETPLACE: 'Describe el producto, estado, detalles...',
     COMMUNITY:   'Describe el evento o publicación...',
@@ -133,6 +170,62 @@ export default function CreatePostPage() {
     );
   }
 
+  /* ── Paso 1.5: HOUSING — elegir intención antes del formulario ── */
+  if (module === 'HOUSING' && !form.housingIntention) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-6 pb-20 md:pb-6">
+        <div className="flex items-center gap-3 mb-8">
+          <button onClick={handleBack} className="btn-ghost p-2 -ml-2">
+            <ArrowLeft size={18} />
+          </button>
+          <div>
+            <h1 className="text-xl font-bold">Alojamiento</h1>
+            <span className="text-sm font-medium" style={{ color: mod?.color }}>Nueva publicación</span>
+          </div>
+        </div>
+
+        <p className="text-lg font-semibold mb-1">¿Qué necesitas publicar?</p>
+        <p className="text-sm text-gray-500 mb-6">El formulario se adaptará según tu selección.</p>
+
+        <div className="space-y-3">
+          {([
+            {
+              key: 'busqueda' as const,
+              label: 'Busco arriendo',
+              sub: 'Estoy buscando habitación o casa donde vivir',
+              Icon: Search,
+              color: 'text-blue-500',
+              bg: 'bg-blue-50',
+            },
+            {
+              key: 'oferta' as const,
+              label: 'Ofrezco arriendo',
+              sub: 'Tengo una habitación o propiedad disponible',
+              Icon: Home,
+              color: 'text-emerald-600',
+              bg: 'bg-emerald-50',
+            },
+          ]).map(({ key, label, sub, Icon, color, bg }) => (
+            <button
+              key={key}
+              onClick={() => setForm((f) => ({ ...f, housingIntention: key }))}
+              className="card w-full p-5 flex items-center gap-4 text-left hover:shadow-md transition-all active:scale-[0.99]"
+            >
+              <div className={`w-12 h-12 rounded-xl ${bg} flex items-center justify-center shrink-0`}>
+                <Icon size={22} className={color} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-gray-900">{label}</p>
+                <p className="text-sm text-gray-500 mt-0.5">{sub}</p>
+              </div>
+              <ChevronRight size={18} className="text-gray-300 shrink-0" />
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   /* ── Paso 2: formulario según módulo ── */
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 pb-20 md:pb-6">
@@ -173,24 +266,48 @@ export default function CreatePostPage() {
           />
         </div>
 
-        {/* Campos específicos */}
-        {module === 'HOUSING' && (
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-medium mb-1">Tipo</label>
-              <select className="input" value={form.housingTipo} onChange={set('housingTipo')}>
-                <option value="">Cualquiera</option>
-                <option value="pieza">Pieza</option>
-                <option value="casa">Casa</option>
-                <option value="carpa">Carpa</option>
-                <option value="cabaña">Cabaña</option>
-              </select>
+        {/* Campos específicos HOUSING oferta */}
+        {module === 'HOUSING' && form.housingIntention === 'oferta' && (
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium mb-1">Bills</label>
+                <select className="input" value={form.housingBills} onChange={set('housingBills')}>
+                  <option value="">Seleccionar</option>
+                  <option value="incluidas">Incluidas en el precio</option>
+                  <option value="no incluidas">No incluidas</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Baño</label>
+                <select className="input" value={form.housingBano} onChange={set('housingBano')}>
+                  <option value="">Seleccionar</option>
+                  <option value="independiente">Independiente</option>
+                  <option value="compartido">Compartido</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Habitación</label>
+                <select className="input" value={form.housingHabitacion} onChange={set('housingHabitacion')}>
+                  <option value="">Seleccionar</option>
+                  <option value="single">Single (solo tú)</option>
+                  <option value="compartida">Compartida</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Estacionamiento</label>
+                <select className="input" value={form.housingEstacionamiento} onChange={set('housingEstacionamiento')}>
+                  <option value="">Seleccionar</option>
+                  <option value="si">Disponible</option>
+                  <option value="no">No disponible</option>
+                </select>
+              </div>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Disponible desde</label>
+              <label className="block text-sm font-medium mb-1">Disponible desde (opcional)</label>
               <input type="date" className="input" value={form.disponibleDesde} onChange={set('disponibleDesde')} />
             </div>
-          </div>
+          </>
         )}
 
         {module === 'JOBS' && (
@@ -239,7 +356,10 @@ export default function CreatePostPage() {
         {showPrice && (
           <div>
             <label className="block text-sm font-medium mb-1">
-              {module === 'JOBS' ? 'Salario / tarifa (opcional)' : 'Precio (opcional)'}
+              {module === 'JOBS' ? 'Salario / tarifa (opcional)' :
+               module === 'HOUSING' && form.housingIntention === 'busqueda' ? 'Presupuesto máximo / semana (opcional)' :
+               module === 'HOUSING' ? 'Precio / semana (opcional)' :
+               'Precio (opcional)'}
             </label>
             <input
               type="number" min="0" className="input" value={form.price}
