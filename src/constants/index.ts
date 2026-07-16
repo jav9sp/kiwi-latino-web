@@ -156,6 +156,30 @@ export const NZ_ALL_CITIES = NZ_REGIONS
   .flatMap((r) => r.cities)
   .sort((a, b) => a.localeCompare(b, 'es')) as string[];
 
+export const OFICIOS = [
+  'Barbero / Peluquero',
+  'Mecánico',
+  'Carpintero',
+  'Electricista',
+  'Plomero / Gasfiter',
+  'Pintor',
+  'Cocinero / Chef',
+  'Limpieza / Aseo',
+  'Jardinero / Paisajista',
+  'Manicurista / Esteticista',
+  'Tatuador',
+  'Fotógrafo / Videógrafo',
+  'Traductor / Intérprete',
+  'Profesor / Tutor',
+  'Contador / Finanzas',
+  'Construcción / Albañilería',
+  'Costura / Modistería',
+  'Diseño Gráfico / Web',
+  'Otro',
+] as const;
+
+export type Oficio = (typeof OFICIOS)[number];
+
 export const POST_MODULES = [
   { key: 'HOUSING',     label: 'Alojamiento', color: '#4CAF50' },
   { key: 'JOBS',        label: 'Empleos',     color: '#2196F3' },

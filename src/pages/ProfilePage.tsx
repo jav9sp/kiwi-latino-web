@@ -4,7 +4,7 @@ import { ArrowLeft, User, LogOut, Edit2, Check, X, MapPin, MessageCircle, Camera
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '../stores/authStore';
 import OnboardingChecklist from '../components/OnboardingChecklist';
-import { NZ_CITIES, POST_MODULES, LATAM_COUNTRIES, getFlagEmoji } from '../constants';
+import { NZ_CITIES, POST_MODULES, LATAM_COUNTRIES, OFICIOS, getFlagEmoji } from '../constants';
 import Flag from '../components/Flag';
 import api from '../lib/api';
 import { compressImage } from '../lib/imageUtils';
@@ -61,6 +61,12 @@ export default function ProfilePage() {
   const [city, setCity] = useState(user?.cityNz ?? '');
   const [country, setCountry] = useState(user?.countryOrigin ?? '');
   const [bio, setBio] = useState(user?.bio ?? '');
+  const [oficio, setOficio] = useState((user as { oficio?: string })?.oficio ?? '');
+  const [descripcionServicio, setDescripcionServicio] = useState((user as { descripcionServicio?: string })?.descripcionServicio ?? '');
+  const [contactoDirectorio, setContactoDirectorio] = useState((user as { contactoDirectorio?: string })?.contactoDirectorio ?? '');
+  const [instagram, setInstagram] = useState((user as { instagram?: string })?.instagram ?? '');
+  const [tiktok, setTiktok] = useState((user as { tiktok?: string })?.tiktok ?? '');
+  const [facebook, setFacebook] = useState((user as { facebook?: string })?.facebook ?? '');
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -93,7 +99,15 @@ export default function ProfilePage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await updateProfile({ name, cityNz: city, countryOrigin: country, bio });
+      await updateProfile({
+        name, cityNz: city, countryOrigin: country, bio,
+        oficio: oficio || null,
+        descripcionServicio: descripcionServicio || null,
+        contactoDirectorio: contactoDirectorio || null,
+        instagram: instagram || null,
+        tiktok: tiktok || null,
+        facebook: facebook || null,
+      } as Parameters<typeof updateProfile>[0]);
       setEditing(false);
     } finally {
       setSaving(false);
@@ -265,6 +279,77 @@ export default function ProfilePage() {
             ) : (
               <p className="text-sm text-gray-600">{profile?.bio ?? 'Sin descripción'}</p>
             )}
+          </div>
+
+          <div className="border-t border-gray-100 dark:border-gray-800 pt-3">
+            <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">Directorio de oficios</p>
+            <div className="space-y-3">
+              <div>
+                <p className="text-xs font-medium text-gray-500 mb-1">Oficio o servicio</p>
+                {editing ? (
+                  <select className="input" value={oficio} onChange={(e) => setOficio(e.target.value)}>
+                    <option value="">Sin oficio (no aparezco en el directorio)</option>
+                    {OFICIOS.map((o) => <option key={o} value={o}>{o}</option>)}
+                  </select>
+                ) : (
+                  (profile as { oficio?: string })?.oficio
+                    ? <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">{(profile as { oficio?: string }).oficio}</span>
+                    : <p className="text-sm text-gray-400">No especificado</p>
+                )}
+              </div>
+              {(editing || (profile as { oficio?: string })?.oficio) && (<>
+                <div>
+                  <p className="text-xs font-medium text-gray-500 mb-1">Descripción del servicio</p>
+                  {editing ? (
+                    <textarea
+                      className="input resize-none" rows={2}
+                      value={descripcionServicio}
+                      onChange={(e) => setDescripcionServicio(e.target.value)}
+                      placeholder="Ej: Cortes, coloraciones y keratina a domicilio en Auckland"
+                      maxLength={300}
+                    />
+                  ) : (
+                    (profile as { descripcionServicio?: string })?.descripcionServicio
+                      ? <p className="text-sm text-gray-600">{(profile as { descripcionServicio?: string }).descripcionServicio}</p>
+                      : editing ? null : <p className="text-sm text-gray-400">Sin descripción</p>
+                  )}
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-gray-500 mb-1">Contacto <span className="text-gray-400 font-normal">(WhatsApp o teléfono)</span></p>
+                  {editing ? (
+                    <input type="text" className="input" value={contactoDirectorio} onChange={(e) => setContactoDirectorio(e.target.value)} placeholder="Ej: +64 21 123 456" />
+                  ) : (
+                    <p className="text-sm text-gray-600">{(profile as { contactoDirectorio?: string })?.contactoDirectorio ?? '—'}</p>
+                  )}
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 mb-1">Instagram</p>
+                    {editing ? (
+                      <input type="text" className="input text-sm" value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="@usuario" />
+                    ) : (
+                      <p className="text-sm text-gray-600">{(profile as { instagram?: string })?.instagram ?? '—'}</p>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 mb-1">TikTok</p>
+                    {editing ? (
+                      <input type="text" className="input text-sm" value={tiktok} onChange={(e) => setTiktok(e.target.value)} placeholder="@usuario" />
+                    ) : (
+                      <p className="text-sm text-gray-600">{(profile as { tiktok?: string })?.tiktok ?? '—'}</p>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 mb-1">Facebook</p>
+                    {editing ? (
+                      <input type="text" className="input text-sm" value={facebook} onChange={(e) => setFacebook(e.target.value)} placeholder="página o /usuario" />
+                    ) : (
+                      <p className="text-sm text-gray-600">{(profile as { facebook?: string })?.facebook ?? '—'}</p>
+                    )}
+                  </div>
+                </div>
+              </>)}
+            </div>
           </div>
         </div>
       </div>
