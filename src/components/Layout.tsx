@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom';
-import { Home, Car, Users, ShoppingBag, MessageCircle, User, LogOut, Building2, Briefcase, Menu, X, LayoutDashboard, Bookmark } from 'lucide-react';
+import { Home, Car, Users, ShoppingBag, MessageCircle, User, LogOut, Building2, Briefcase, Menu, X, LayoutDashboard, Bookmark, BookUser } from 'lucide-react';
 import Flag from './Flag';
 import { useAuthStore } from '../stores/authStore';
 import { useUnreadCount } from '../hooks/useMessages';
@@ -13,6 +13,7 @@ const nav = [
   { to: '/trips',       icon: Car,           label: 'Viajes' },
   { to: '/community',   icon: Users,         label: 'Comunidad' },
   { to: '/marketplace',   icon: ShoppingBag,   label: 'Marketplace' },
+  { to: '/directorio',   icon: BookUser,      label: 'Directorio' },
   { to: '/saved',       icon: Bookmark,      label: 'Guardados' },
   { to: '/messages',    icon: MessageCircle, label: 'Mensajes' },
   { to: '/profile',     icon: User,          label: 'Perfil' },

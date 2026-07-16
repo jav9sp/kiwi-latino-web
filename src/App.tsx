@@ -25,6 +25,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import SavedPostsPage from './pages/SavedPostsPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
 import MarketplacePage from './pages/MarketplacePage';
+import DirectorioPage from './pages/DirectorioPage';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuthStore();
@@ -65,6 +66,7 @@ export default function App() {
           <Route path="housing" element={<HousingPage />} />
           <Route path="jobs" element={<JobsPage />} />
           <Route path="marketplace" element={<MarketplacePage />} />
+          <Route path="directorio" element={<DirectorioPage />} />
           <Route path="community" element={<CommunityPage />} />
           <Route path="saved" element={<SavedPostsPage />} />
           <Route path="messages" element={<MessagesPage />} />
