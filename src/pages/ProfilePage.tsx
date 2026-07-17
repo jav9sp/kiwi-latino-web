@@ -20,6 +20,8 @@ interface TripSummary {
 interface PublicProfile {
   id: string; name: string; cityNz?: string; countryOrigin?: string; avatarUrl?: string; bio?: string;
   lastSeenAt?: string;
+  oficio?: string | null; descripcionServicio?: string | null; imagenOficio?: string | null;
+  contactoDirectorio?: string | null; instagram?: string | null; tiktok?: string | null; facebook?: string | null;
   posts?: Pick<Post, 'id' | 'module' | 'title' | 'city' | 'images'>[];
   tripsCreated?: TripSummary[];
 }
