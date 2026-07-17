@@ -61,12 +61,14 @@ export default function ProfilePage() {
   const [city, setCity] = useState(user?.cityNz ?? '');
   const [country, setCountry] = useState(user?.countryOrigin ?? '');
   const [bio, setBio] = useState(user?.bio ?? '');
-  const [oficio, setOficio] = useState((user as { oficio?: string })?.oficio ?? '');
-  const [descripcionServicio, setDescripcionServicio] = useState((user as { descripcionServicio?: string })?.descripcionServicio ?? '');
-  const [contactoDirectorio, setContactoDirectorio] = useState((user as { contactoDirectorio?: string })?.contactoDirectorio ?? '');
-  const [instagram, setInstagram] = useState((user as { instagram?: string })?.instagram ?? '');
-  const [tiktok, setTiktok] = useState((user as { tiktok?: string })?.tiktok ?? '');
-  const [facebook, setFacebook] = useState((user as { facebook?: string })?.facebook ?? '');
+  const [oficio, setOficio] = useState(user?.oficio ?? '');
+  const [descripcionServicio, setDescripcionServicio] = useState(user?.descripcionServicio ?? '');
+  const [contactoDirectorio, setContactoDirectorio] = useState(user?.contactoDirectorio ?? '');
+  const [instagram, setInstagram] = useState(user?.instagram ?? '');
+  const [tiktok, setTiktok] = useState(user?.tiktok ?? '');
+  const [facebook, setFacebook] = useState(user?.facebook ?? '');
+  const [uploadingOficioImg, setUploadingOficioImg] = useState(false);
+  const fileInputOficioRef = useRef<HTMLInputElement>(null);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -96,6 +98,22 @@ export default function ProfilePage() {
     }
   };
 
+  const handleOficioImgChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingOficioImg(true);
+    try {
+      const blob = await compressImage(file, 1200, 0.85);
+      const formData = new FormData();
+      formData.append('image', blob, 'oficio.jpg');
+      const { data } = await api.post<{ data: { url: string } }>('/upload/image', formData, { timeout: 60_000 });
+      await updateProfile({ imagenOficio: data.data.url });
+    } finally {
+      setUploadingOficioImg(false);
+      if (fileInputOficioRef.current) fileInputOficioRef.current.value = '';
+    }
+  };
+
   const handleSave = async () => {
     setSaving(true);
     try {
@@ -107,7 +125,7 @@ export default function ProfilePage() {
         instagram: instagram || null,
         tiktok: tiktok || null,
         facebook: facebook || null,
-      } as Parameters<typeof updateProfile>[0]);
+      });
       setEditing(false);
     } finally {
       setSaving(false);
@@ -292,12 +310,45 @@ export default function ProfilePage() {
                     {OFICIOS.map((o) => <option key={o} value={o}>{o}</option>)}
                   </select>
                 ) : (
-                  (profile as { oficio?: string })?.oficio
-                    ? <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">{(profile as { oficio?: string }).oficio}</span>
+                  profile?.oficio
+                    ? <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">{profile.oficio}</span>
                     : <p className="text-sm text-gray-400">No especificado</p>
                 )}
               </div>
-              {(editing || (profile as { oficio?: string })?.oficio) && (<>
+              {(editing || profile?.oficio) && (<>
+                {/* Imagen destacada del oficio */}
+                <div>
+                  <p className="text-xs font-medium text-gray-500 mb-1">Foto de tu trabajo</p>
+                  <input
+                    ref={fileInputOficioRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    onChange={handleOficioImgChange}
+                  />
+                  <div
+                    className={`relative w-full h-36 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 ${editing ? 'cursor-pointer group' : ''}`}
+                    onClick={() => editing && !uploadingOficioImg && fileInputOficioRef.current?.click()}
+                  >
+                    {user?.imagenOficio ? (
+                      <img src={user.imagenOficio} alt="Foto del trabajo" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center gap-1 text-gray-400">
+                        <Camera size={22} />
+                        {editing && <p className="text-xs">Subir foto</p>}
+                      </div>
+                    )}
+                    {editing && (
+                      <div className={`absolute inset-0 bg-black/50 flex flex-col items-center justify-center gap-1 transition-opacity ${uploadingOficioImg ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                        {uploadingOficioImg
+                          ? <div className="w-6 h-6 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                          : <><Camera size={20} className="text-white" /><p className="text-xs text-white">Cambiar foto</p></>
+                        }
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 <div>
                   <p className="text-xs font-medium text-gray-500 mb-1">Descripción del servicio</p>
                   {editing ? (
@@ -309,9 +360,9 @@ export default function ProfilePage() {
                       maxLength={300}
                     />
                   ) : (
-                    (profile as { descripcionServicio?: string })?.descripcionServicio
-                      ? <p className="text-sm text-gray-600">{(profile as { descripcionServicio?: string }).descripcionServicio}</p>
-                      : editing ? null : <p className="text-sm text-gray-400">Sin descripción</p>
+                    profile?.descripcionServicio
+                      ? <p className="text-sm text-gray-600">{profile.descripcionServicio}</p>
+                      : <p className="text-sm text-gray-400">Sin descripción</p>
                   )}
                 </div>
                 <div>
@@ -319,7 +370,7 @@ export default function ProfilePage() {
                   {editing ? (
                     <input type="text" className="input" value={contactoDirectorio} onChange={(e) => setContactoDirectorio(e.target.value)} placeholder="Ej: +64 21 123 456" />
                   ) : (
-                    <p className="text-sm text-gray-600">{(profile as { contactoDirectorio?: string })?.contactoDirectorio ?? '—'}</p>
+                    <p className="text-sm text-gray-600">{profile?.contactoDirectorio ?? '—'}</p>
                   )}
                 </div>
                 <div className="grid grid-cols-3 gap-2">
@@ -328,7 +379,7 @@ export default function ProfilePage() {
                     {editing ? (
                       <input type="text" className="input text-sm" value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="@usuario" />
                     ) : (
-                      <p className="text-sm text-gray-600">{(profile as { instagram?: string })?.instagram ?? '—'}</p>
+                      <p className="text-sm text-gray-600">{profile?.instagram ?? '—'}</p>
                     )}
                   </div>
                   <div>
@@ -336,7 +387,7 @@ export default function ProfilePage() {
                     {editing ? (
                       <input type="text" className="input text-sm" value={tiktok} onChange={(e) => setTiktok(e.target.value)} placeholder="@usuario" />
                     ) : (
-                      <p className="text-sm text-gray-600">{(profile as { tiktok?: string })?.tiktok ?? '—'}</p>
+                      <p className="text-sm text-gray-600">{profile?.tiktok ?? '—'}</p>
                     )}
                   </div>
                   <div>
@@ -344,7 +395,7 @@ export default function ProfilePage() {
                     {editing ? (
                       <input type="text" className="input text-sm" value={facebook} onChange={(e) => setFacebook(e.target.value)} placeholder="página o /usuario" />
                     ) : (
-                      <p className="text-sm text-gray-600">{(profile as { facebook?: string })?.facebook ?? '—'}</p>
+                      <p className="text-sm text-gray-600">{profile?.facebook ?? '—'}</p>
                     )}
                   </div>
                 </div>
