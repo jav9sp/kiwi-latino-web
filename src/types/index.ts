@@ -8,6 +8,13 @@ export interface User {
   countryOrigin?: string;
   avatarUrl?: string;
   bio?: string;
+  oficio?: string;
+  descripcionServicio?: string;
+  imagenOficio?: string;
+  contactoDirectorio?: string;
+  instagram?: string;
+  tiktok?: string;
+  facebook?: string;
   createdAt: string;
 }
 

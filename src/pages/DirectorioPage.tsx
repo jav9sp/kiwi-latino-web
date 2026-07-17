@@ -10,7 +10,7 @@ import EmptyState from '../components/EmptyState';
 
 interface DirectorioUser {
   id: string; name: string; avatarUrl?: string;
-  oficio: string; descripcionServicio?: string;
+  oficio: string; descripcionServicio?: string; imagenOficio?: string;
   contactoDirectorio?: string; instagram?: string; tiktok?: string; facebook?: string;
   cityNz?: string; countryOrigin?: string;
 }
@@ -88,7 +88,18 @@ export default function DirectorioPage() {
       ) : (
         <div className="space-y-3">
           {users.map((u) => (
-            <div key={u.id} className="card p-4 flex items-start gap-4">
+            <div key={u.id} className="card overflow-hidden">
+              {/* Banner imagen del oficio */}
+              {u.imagenOficio && (
+                <div
+                  className="w-full h-40 overflow-hidden cursor-pointer"
+                  onClick={() => navigate(`/profile/${u.id}`)}
+                >
+                  <img src={u.imagenOficio} alt={u.oficio} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                </div>
+              )}
+
+              <div className="p-4 flex items-start gap-4">
               {/* Avatar */}
               <div
                 className="w-14 h-14 rounded-full overflow-hidden shrink-0 cursor-pointer"
@@ -186,6 +197,7 @@ export default function DirectorioPage() {
                     Ver perfil
                   </button>
                 </div>
+              </div>
               </div>
             </div>
           ))}
